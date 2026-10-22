@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Exercices Windows — Invite de commandes</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f5f7fa;--card:#fff;--ink:#1c2836;--mut:#5b6b7c;--line:#dde4ec;--ac:#0e6b8c;--ac2:#e2eef3;--warn:#fff6e0;--warnl:#e6b422;--ok:#e8f5ee;--okl:#2e8b57;--term:#14202b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:16px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
+code,pre,kbd{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace}
+.wrap{display:grid;grid-template-columns:250px minmax(0,1fr);max-width:1180px;margin:0 auto}
+nav{position:sticky;top:0;align-self:start;height:100vh;overflow:auto;padding:28px 20px;border-right:1px solid var(--line);background:var(--card)}
+nav b{display:block;font-size:15px;margin-bottom:14px;color:var(--ac)}
+nav a{display:block;padding:6px 10px;margin:2px 0;color:var(--ink);text-decoration:none;border-radius:6px;font-size:14px}
+nav a:hover,nav a:focus-visible{background:var(--ac2);outline:none}
+main{padding:36px 40px 80px;min-width:0}
+header.hero{border-bottom:3px solid var(--ac);padding-bottom:22px;margin-bottom:30px}
+.hero h1{font-size:2.2rem;line-height:1.2;margin:0 0 8px}
+.hero p{color:var(--mut);margin:0;max-width:62ch}
+section{margin-bottom:56px}
+h2{font-size:1.6rem;margin:0 0 16px;padding-top:8px;border-top:1px solid var(--line)}
+h3{font-size:1.15rem;margin:26px 0 8px;color:var(--ac)}
+p,li{max-width:76ch}
+.obj{background:var(--ac2);border-left:4px solid var(--ac);padding:12px 18px;border-radius:0 8px 8px 0;margin:14px 0}
+.note{background:var(--warn);border-left:4px solid var(--warnl);padding:10px 16px;border-radius:0 8px 8px 0;margin:14px 0}
+figure{margin:18px 0;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:13px;color:var(--mut);margin-top:8px;text-align:center}
+pre{background:var(--term);color:#dfe9f2;padding:14px 16px;border-radius:8px;overflow-x:auto;font-size:14px;line-height:1.5;margin:10px 0}
+pre .p{color:#7fd1a0}pre .c{color:#8aa0b3}pre .o{color:#f0c674}
+:not(pre)>code{background:#e9eff5;padding:1px 6px;border-radius:4px;font-size:.9em}
+table{border-collapse:collapse;width:100%;background:var(--card);font-size:14.5px;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:8px 12px;text-align:left;vertical-align:top}
+th{background:var(--ac2)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.card h4{margin:0 0 6px;font-size:1.02rem}
+.card ol,.card ul{padding-left:20px;margin:6px 0}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:99px;background:var(--ac2);color:var(--ac);margin-bottom:6px}
+.ex{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 20px;margin:18px 0}
+.ex h3{margin-top:0}
+details{margin:8px 0;border-radius:8px;border:1px solid var(--line);background:#fbfcfd}
+summary{cursor:pointer;padding:8px 14px;font-weight:500}
+summary:focus-visible{outline:2px solid var(--ac)}
+details>div{padding:0 14px 10px}
+details.hint{border-color:var(--warnl)}details.hint summary{background:var(--warn)}
+details.res{border-color:var(--okl)}details.res summary{background:var(--ok)}
+footer{color:var(--mut);font-size:13px;border-top:1px solid var(--line);padding-top:14px}
+@media(max-width:820px){.wrap{display:block}nav{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line)}main{padding:24px 16px 60px}.hero h1{font-size:1.7rem}}
+.cover{min-height:88vh;display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center;background:linear-gradient(135deg,#fff 55%,#e2eef3);border:1px solid var(--line);border-radius:14px;padding:44px;margin-bottom:48px}
+.cover h1{font-size:2.7rem;line-height:1.15;margin:6px 0 14px}.cover .ch{color:var(--ac);font-weight:600;font-size:1.15rem}
+.btn{display:inline-block;background:var(--ac);color:#fff;padding:11px 22px;border-radius:8px;text-decoration:none;font-weight:500;margin-top:8px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;align-items:center}
+@media(max-width:820px){.cover{grid-template-columns:1fr;padding:24px;min-height:auto}.cover h1{font-size:2rem}}
+.lvl{background:var(--ac);color:#fff;padding:8px 14px;border-radius:8px;margin:34px 0 4px}.lvd{color:var(--mut);margin:4px 0 8px}
+h1,h2,.cover h1{font-family:"Source Serif 4",Georgia,"Times New Roman",serif}
+h2{border-top:0;border-left:6px solid var(--ac);background:var(--card);padding:10px 16px;border-radius:0 8px 8px 0;box-shadow:0 1px 0 var(--line)}
+.brand{border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:14px}
+.brand span{display:block;font-size:12.5px;color:var(--mut)}.brand b{margin:2px 0 10px}
+.pg{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin-bottom:4px}.pg i{display:block;height:100%;width:0;background:var(--ac);transition:width .2s}
+nav a.on{background:var(--ac2);color:var(--ac);font-weight:600;box-shadow:inset 3px 0 var(--ac)}
+#bar{position:fixed;top:0;left:0;height:4px;width:0;background:var(--ac);z-index:50;padding-top:env(safe-area-inset-top,0px)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}.chips span{background:var(--card);border:1px solid var(--line);border-radius:99px;padding:3px 12px;font-size:13.5px;color:var(--mut)}
+.goals{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--ac);border-radius:8px;padding:12px 18px;margin:14px 0 18px;font-size:15px}.goals ul{margin:6px 0 0;padding-left:20px}
+.pn{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:28px;padding-top:14px;border-top:1px dashed var(--line)}
+.pn a{color:var(--ac);text-decoration:none;font-weight:500;padding:8px 14px;border:1px solid var(--line);background:var(--card);border-radius:8px}.pn a:hover,.pn a:focus-visible{background:var(--ac2);outline:none}
+details{overflow:hidden;border-radius:10px;border-width:1.5px;border-style:solid}
+details>summary{border-radius:0;list-style-position:inside;padding:9px 16px}
+details[open]>summary{border-bottom:1px solid var(--line)}
+details>div{padding:10px 16px 12px}details>div>pre{margin:0}
+.kw{color:var(--ac);font-style:italic;font-size:.93em}.kwl{margin-top:2px;font-size:14px;color:var(--mut)}.opts{margin-top:10px;font-size:14px;background:#fff;border:1px dashed var(--warnl);border-radius:8px;padding:8px 14px}.opts ul{margin:4px 0 0;padding-left:18px}
+</style></head><body><div class="wrap">
+<nav aria-label="Sommaire"><div class="brand"><span>Systèmes d'exploitation · 1re année</span><b>Travaux pratiques Windows</b><div class="pg"><i id="pgf"></i></div><span id="pgt">0 % parcouru</span></div>
+<a href="#accueil">Accueil</a><a href="#bases">Avant de commencer</a><a href="#afficher">A. Afficher</a><a href="#naviguer">B. Naviguer</a><a href="#fichiers">C. Gérer les fichiers</a><a href="#avance">D. Aller plus loin</a></nav>
+<main><header class="cover" id="accueil"><div><div class="ch">Travaux pratiques</div><h1>Les commandes de base de Windows</h1>
+<p>10 exercices progressifs avec l'Invite de commandes (CMD). Chaque exercice est une suite de questions à faire dans l'ordre : afficher, naviguer, gérer des fichiers, puis enchaîner les commandes.</p>
+<div class="chips"><span>Niveau : débutant à intermédiaire</span><span>Durée : environ 3 h</span><span>10 exercices, 79 questions corrigées</span></div>
+<div class="goals"><b>À la fin, vous saurez :</b><ul><li>afficher des informations et lister des dossiers avec <code>dir</code> et ses options</li><li>vous déplacer et lire l'aide d'une commande</li><li>créer, copier, déplacer, renommer et supprimer des fichiers</li><li>utiliser les jokers, la redirection et le tube <code>|</code></li></ul></div>
+<div class="note"><b>Ouvrir l'Invite de commandes :</b> touches <kbd>Windows</kbd>+<kbd>R</kbd>, tapez <code>cmd</code>, puis Entrée. Faites les exercices dans l'ordre : chacun réutilise les dossiers du précédent.</div>
+<a class="btn" href="#bases">Commencer</a></div><div><svg viewBox="0 0 360 230" role="img" aria-label="Fenêtre de l'Invite de commandes" style="max-width:380px;margin:auto"><rect x="6" y="6" width="348" height="218" rx="10" fill="#14202b"/><rect x="6" y="6" width="348" height="30" rx="10" fill="#e2eef3"/><rect x="6" y="26" width="348" height="10" fill="#e2eef3"/><text x="20" y="26" font-family="IBM Plex Sans,sans-serif" font-size="13" fill="#1c2836">Invite de commandes</text><g font-family="IBM Plex Mono,monospace" font-size="14"><text x="20" y="68" fill="#7fd1a0">C:\Users\alice&gt;<tspan fill="#dfe9f2"> dir /w</tspan></text><text x="20" y="94" fill="#dfe9f2">[Desktop]  [Documents]</text><text x="20" y="130" fill="#7fd1a0">C:\Users\alice&gt;<tspan fill="#dfe9f2"> mkdir tp</tspan></text><text x="20" y="166" fill="#7fd1a0">C:\Users\alice&gt;<tspan fill="#f0c674"> _</tspan></text></g></svg></div></header>
+<section id="bases"><h2>Avant de commencer — Variables et attributs</h2>
+<p class="lvd">À lire d'abord · deux notions utilisées dans les exercices</p>
+<div class="obj"><b>En bref :</b> une <b>variable</b> est une petite étiquette qui contient une valeur (votre nom, un dossier…). On l'écrit entre deux signes <code>%</code>. Un <b>attribut</b> est un drapeau posé sur un fichier (caché, lecture seule…).</div>
+<h3>1. Les variables d'environnement</h3>
+<p>Windows en prépare plusieurs pour vous. Pour voir leur valeur, on les affiche avec <code>echo</code>. Le shell remplace <code>%NOM%</code> par sa valeur avant d'exécuter la commande.</p>
+<table><tr><th>Variable</th><th>Contient</th><th>Exemple</th></tr>
+<tr><td><code>%USERNAME%</code></td><td>nom de l'utilisateur connecté</td><td>alice</td></tr>
+<tr><td><code>%COMPUTERNAME%</code></td><td>nom de l'ordinateur</td><td>PC-ALICE</td></tr>
+<tr><td><code>%USERPROFILE%</code></td><td>dossier personnel</td><td>C:\Users\alice</td></tr>
+<tr><td><code>%HOMEDRIVE%</code></td><td>lettre du disque système</td><td>C:</td></tr>
+<tr><td><code>%SystemRoot%</code></td><td>dossier de Windows</td><td>C:\Windows</td></tr>
+<tr><td><code>%CD%</code></td><td>dossier courant</td><td>C:\Users\alice\tp</td></tr>
+<tr><td><code>%DATE%</code> et <code>%TIME%</code></td><td>date et heure actuelles</td><td>28/09/2026 et 10:30:12,45</td></tr>
+<tr><td><code>%PATH%</code></td><td>liste des dossiers où Windows cherche les commandes</td><td>C:\Windows\system32;…</td></tr></table>
+<pre><span class="p">C:\Users\alice&gt;</span> echo %USERNAME%
+alice
+<span class="p">C:\Users\alice&gt;</span> echo Je suis %USERNAME% sur %COMPUTERNAME%
+Je suis alice sur PC-ALICE
+<span class="p">C:\Users\alice&gt;</span> cd %USERPROFILE%
+<span class="p">C:\Users\alice&gt;</span> set USER
+USERDOMAIN=PC-ALICE
+USERNAME=alice
+USERPROFILE=C:\Users\alice
+<span class="p">C:\Users\alice&gt;</span> set ECOLE=ISET
+<span class="p">C:\Users\alice&gt;</span> echo %ECOLE%
+ISET</pre>
+<ul><li><code>set</code> seul liste toutes les variables ; <code>set USER</code> n'affiche que celles qui commencent par USER.</li>
+<li><code>set NOM=valeur</code> crée votre propre variable. Elle disparaît à la fermeture de la fenêtre.</li></ul>
+<h3>2. Les attributs de fichiers</h3>
+<p>Chaque fichier porte des attributs qui changent son comportement. On les voit et on les modifie avec <code>attrib</code> : <code>+</code> ajoute un attribut, <code>-</code> le retire.</p>
+<table><tr><th>Lettre</th><th>Mot anglais</th><th>Effet</th></tr>
+<tr><td><code>R</code></td><td>Read-only</td><td>lecture seule : on ne peut pas modifier ni supprimer le fichier</td></tr>
+<tr><td><code>H</code></td><td>Hidden</td><td>caché : absent de <code>dir</code> sans l'option <code>/a</code></td></tr>
+<tr><td><code>S</code></td><td>System</td><td>fichier système, aussi masqué par défaut</td></tr>
+<tr><td><code>A</code></td><td>Archive</td><td>modifié depuis la dernière sauvegarde (posé automatiquement)</td></tr></table>
+<pre><span class="p">C:\Users\alice\tp\docs&gt;</span> attrib a.txt
+A          C:\Users\alice\tp\docs\a.txt
+<span class="p">C:\Users\alice\tp\docs&gt;</span> attrib +r a.txt
+<span class="p">C:\Users\alice\tp\docs&gt;</span> attrib a.txt
+A    R     C:\Users\alice\tp\docs\a.txt
+<span class="p">C:\Users\alice\tp\docs&gt;</span> attrib -r a.txt
+<span class="p">C:\Users\alice\tp\docs&gt;</span> attrib +h a.txt
+(a.txt n'apparaît plus avec dir)
+<span class="p">C:\Users\alice\tp\docs&gt;</span> dir /a:h
+(n'affiche que les fichiers cachés)</pre>
+<div class="note"><b>Exemple à titre d'illustration :</b> ne le tapez pas maintenant. Vous mettrez les attributs en pratique aux exercices 8 et 10.</div></section>
+<section id="afficher"><h2>Partie A — Afficher</h2><p class="lvd">Niveau facile · commandes d'affichage et d'aide</p>
+<div class="ex"><h3>Exercice 1 — Se repérer</h3>
+<p class="lvd" style="margin-top:-6px">Difficulté : <b style="color:var(--ac)">●○○</b> · 8 questions à faire dans l'ordre</p>
+<p><b>Objectif :</b> utiliser des commandes simples et effacer l'écran.</p><ol><li>Affichez le dossier courant.</li><li>Affichez votre nom d'utilisateur.</li><li>Affichez le nom de l'ordinateur.</li><li>Affichez la version de Windows.</li><li>Affichez la date, sans qu'on vous propose de la modifier.</li><li>Affichez l'heure, sans qu'on vous propose de la modifier.</li><li>Affichez le texte « Bonjour CMD ».</li><li>Effacez l'écran.</li></ol>
+<details class="hint"><summary>Indices (un par question)</summary><div><ol><li>Un mot de deux lettres, sans rien d'autre.</li><li>Il est stocké dans la variable <code>%USERNAME%</code>, à afficher avec <code>echo</code>.</li><li>Un nom de commande qui ressemble au mot anglais « host ».</li><li>Version du système.</li><li>Ajoutez l'option à <code>date</code>.<div class="kwl">Options utilisées : <code>/t</code> <span class="kw">(time only)</span></div></li><li>Même option que pour la date.<div class="kwl">Options utilisées : <code>/t</code> <span class="kw">(time only)</span></div></li><li><code>echo</code> suivi du texte.</li><li>« clear screen » en trois lettres.</li></ol><div class="opts"><b>Sens des options et symboles :</b><ul><li><code>/t</code> <span class="kw">(time only)</span> : n'affiche que la date ou l'heure, sans demander de la modifier</li></ul></div></div></details>
+<details class="res"><summary>Résultat attendu</summary><div><pre><span class="c">:: Q1</span>
+<span class="p">C:\Users\alice&gt;</span> cd
+C:\Users\alice
+<span class="c">:: Q2</span>
+<span class="p">C:\Users\alice&gt;</span> echo %USERNAME%
+alice
+<span class="c">:: Q3</span>
+<span class="p">C:\Users\alice&gt;</span> hostname
+PC-ALICE
+<span class="c">:: Q4</span>
+<span class="p">C:\Users\alice&gt;</span> ver
+Microsoft Windows [version 10.0.22631.4037]
+<span class="c">:: Q5</span>
+<span class="p">C:\Users\alice&gt;</span> date /t
+lun. 28/09/2026
+<span class="c">:: Q6</span>
+<span class="p">C:\Users\alice&gt;</span> time /t
+10:30
+<span class="c">:: Q7</span>
+<span class="p">C:\Users\alice&gt;</span> echo Bonjour CMD
+Bonjour CMD
+<span class="c">:: Q8</span>
+<span class="p">C:\Users\alice&gt;</span> cls</pre></div></details></div>
+<div class="ex"><h3>Exercice 2 — Lister avec dir et ses options</h3>
+<p class="lvd" style="margin-top:-6px">Difficulté : <b style="color:var(--ac)">●○○</b> · 6 questions à faire dans l'ordre</p>
+<p><b>Objectif :</b> voir l'effet de chaque option sur l'affichage.</p><ol><li>Listez le contenu de votre dossier personnel.</li><li>Listez-le sur plusieurs colonnes.</li><li>Listez-le en incluant les éléments cachés.</li><li>Listez-le en liste simple, sans détails.</li><li>Listez le contenu du dossier Documents sans vous y déplacer.</li><li>Combinez : noms seulement, éléments cachés compris.</li></ol>
+<details class="hint"><summary>Indices (un par question)</summary><div><ol><li><code>dir</code> seul.</li><li>Option <code>/w</code>.<div class="kwl">Options utilisées : <code>/w</code> <span class="kw">(wide format)</span></div></li><li>Option <code>/a</code>.<div class="kwl">Options utilisées : <code>/a</code> <span class="kw">(all files)</span></div></li><li>Option <code>/b</code>.<div class="kwl">Options utilisées : <code>/b</code> <span class="kw">(bare format)</span></div></li><li>Donnez le nom du dossier en argument.<div class="kwl">Options utilisées : <code>/b</code> <span class="kw">(bare format)</span></div></li><li>Deux options l'une après l'autre.<div class="kwl">Options utilisées : <code>/b</code> <span class="kw">(bare format)</span>, <code>/a</code> <span class="kw">(all files)</span></div></li></ol><div class="opts"><b>Sens des options et symboles :</b><ul><li><code>/w</code> <span class="kw">(wide format)</span> : plusieurs colonnes</li><li><code>/a</code> <span class="kw">(all files)</span> : tous les éléments, cachés compris</li><li><code>/b</code> <span class="kw">(bare format)</span> : noms seulement, sans détails</li></ul></div></div></details>
+<details class="res"><summary>Résultat attendu</summary><div><pre><span class="c">:: Q1</span>
+<span class="p">C:\Users\alice&gt;</span> dir
+ Répertoire de C:\Users\alice
+28/09/2026  10:12    &lt;DIR&gt;   Desktop
+28/09/2026  10:12    &lt;DIR&gt;   Documents
+<span class="c">:: Q2</span>
+<span class="p">C:\Users\alice&gt;</span> dir /w
+[Desktop]    [Documents]  [Downloads]
+<span class="c">:: Q3</span>
+<span class="p">C:\Users\alice&gt;</span> dir /a
+(apparaissent aussi des éléments comme AppData)
+<span class="c">:: Q4</span>
+<span class="p">C:\Users\alice&gt;</span> dir /b
+Desktop
+Documents
+Downloads
+<span class="c">:: Q5</span>
+<span class="p">C:\Users\alice&gt;</span> dir /b Documents
+notes.txt
+<span class="c">:: Q6</span>
+<span class="p">C:\Users\alice&gt;</span> dir /b /a
+AppData
+Desktop
+Documents
+Downloads</pre></div></details></div>
+<div class="ex"><h3>Exercice 3 — Chercher de l'aide</h3>
+<p class="lvd" style="margin-top:-6px">Difficulté : <b style="color:var(--ac)">●●○</b> · 6 questions à faire dans l'ordre</p>
+<p><b>Objectif :</b> apprendre à s'aider seul.</p><ol><li>Affichez la liste de toutes les commandes.</li><li>Affichez l'aide de la commande dir.</li><li>Obtenez la même aide avec une option.</li><li>Trouvez l'option de dir qui trie, puis listez par date.</li><li>Trouvez l'option de del qui demande confirmation.</li><li>Trouvez l'option de tree qui affiche les fichiers.</li></ol>
+<details class="hint"><summary>Indices (un par question)</summary><div><ol><li><code>help</code> sans argument.</li><li><code>help dir</code>.</li><li><code>dir /?</code>.<div class="kwl">Options utilisées : <code>/?</code> <span class="kw">(help)</span></div></li><li>Cherchez « tri » dans l'aide : l'option est suivie de <code>:d</code>.<div class="kwl">Options utilisées : <code>/o:d</code> <span class="kw">(order by date)</span></div></li><li><code>del /?</code> et cherchez « confirmation ».<div class="kwl">Options utilisées : <code>/?</code> <span class="kw">(help)</span></div></li><li><code>tree /?</code> puis cherchez « fichiers ».<div class="kwl">Options utilisées : <code>/?</code> <span class="kw">(help)</span></div></li></ol><div class="opts"><b>Sens des options et symboles :</b><ul><li><code>/?</code> <span class="kw">(help)</span> : affiche l'aide de la commande</li><li><code>/o</code> <span class="kw">(order)</span> : trie ; <code>:s</code> taille, <code>:n</code> nom, <code>:d</code> date</li><li><code>/p</code> <span class="kw">(prompt)</span> : demande une confirmation</li><li><code>/f</code> <span class="kw">(files)</span> : affiche aussi les fichiers</li></ul></div></div></details>
+<details class="res"><summary>Résultat attendu</summary><div><pre><span class="c">:: Q1</span>
+<span class="p">C:\Users\alice&gt;</span> help
+ASSOC  Affiche ou modifie les associations...
+CD     Affiche le nom du répertoire courant...
+<span class="c">:: Q2</span>
+<span class="p">C:\Users\alice&gt;</span> help dir
+Affiche la liste des fichiers et des sous-répertoires d'un répertoire.
+<span class="c">:: Q3</span>
+<span class="p">C:\Users\alice&gt;</span> dir /?
+(même aide que la question précédente)
+<span class="c">:: Q4</span>
+<span class="p">C:\Users\alice&gt;</span> dir /o:d
+(éléments du plus ancien au plus récent)
+<span class="c">:: Q5</span>
+<span class="p">C:\Users\alice&gt;</span> del /?
+  /P  Demande confirmation avant de supprimer chaque fichier.
+<span class="c">:: Q6</span>
+<span class="p">C:\Users\alice&gt;</span> tree /?
+  /F  Affiche les noms des fichiers dans chaque dossier.</pre><p>Réponses : tri = <code>/o</code>, confirmation = <code>/p</code>, fichiers = <code>/f</code>.</p></div></details></div>
+</section>
+<section id="naviguer"><h2>Partie B — Naviguer</h2><p class="lvd">Niveau facile · chemins et arborescence</p>
+<div class="ex"><h3>Exercice 4 — Se déplacer et voir l'arborescence</h3>
+<p class="lvd" style="margin-top:-6px">Difficulté : <b style="color:var(--ac)">●●○</b> · 8 questions à faire dans l'ordre</p>
+<p><b>Objectif :</b> utiliser chemins relatifs et absolus.</p><ol><li>Remontez d'un niveau.</li><li>Allez à la racine du disque C:.</li><li>Entrez dans le dossier Windows.</li><li>Entrez dans le sous-dossier System32.</li><li>Remontez de deux niveaux d'un coup.</li><li>Revenez à votre dossier personnel.</li><li>Affichez l'arborescence du dossier Documents.</li><li>Affichez la même arborescence avec les fichiers.</li></ol>
+<details class="hint"><summary>Indices (un par question)</summary><div><ol><li>Le dossier parent s'écrit avec deux points.</li><li>La racine s'écrit avec un antislash.</li><li>Chemin relatif : le nom seul.</li><li>Encore un chemin relatif.</li><li>Enchaînez deux fois le parent avec un antislash.</li><li>Utilisez la variable <code>%USERPROFILE%</code>.</li><li><code>tree</code> suivi du nom.</li><li>Ajoutez l'option de l'exercice 3.<div class="kwl">Options utilisées : <code>/f</code> <span class="kw">(files)</span></div></li></ol><div class="opts"><b>Sens des options et symboles :</b><ul><li><code>..</code> : dossier parent</li><li><code>\</code> : racine du disque</li><li><code>/f</code> <span class="kw">(files)</span> : affiche aussi les fichiers (avec tree)</li></ul></div></div></details>
+<details class="res"><summary>Résultat attendu</summary><div><pre><span class="c">:: Q1</span>
+<span class="p">C:\Users\alice&gt;</span> cd ..
+<span class="p">C:\Users&gt;</span>
+<span class="c">:: Q2</span>
+<span class="p">C:\Users&gt;</span> cd \
+<span class="p">C:\&gt;</span>
+<span class="c">:: Q3</span>
+<span class="p">C:\&gt;</span> cd Windows
+<span class="p">C:\Windows&gt;</span>
+<span class="c">:: Q4</span>
+<span class="p">C:\Windows&gt;</span> cd System32
+<span class="p">C:\Windows\System32&gt;</span>
+<span class="c">:: Q5</span>
+<span class="p">C:\Windows\System32&gt;</span> cd ..\..
+<span class="p">C:\&gt;</span>
+<span class="c">:: Q6</span>
+<span class="p">C:\&gt;</span> cd %USERPROFILE%
+<span class="p">C:\Users\alice&gt;</span>
+<span class="c">:: Q7</span>
+<span class="p">C:\Users\alice&gt;</span> tree Documents
+C:\USERS\ALICE\DOCUMENTS
+Aucun sous-dossier
+<span class="c">:: Q8</span>
+<span class="p">C:\Users\alice&gt;</span> tree Documents /f
+C:\USERS\ALICE\DOCUMENTS
+    notes.txt
+
+Aucun sous-dossier</pre></div></details></div>
+</section>
+<section id="fichiers"><h2>Partie C — Gérer les fichiers</h2><p class="lvd">Niveau moyen · créer, copier, déplacer, supprimer</p>
+<div class="ex"><h3>Exercice 5 — Créer et remplir</h3>
+<p class="lvd" style="margin-top:-6px">Difficulté : <b style="color:var(--ac)">●●○</b> · 6 questions à faire dans l'ordre</p>
+<p><b>Objectif :</b> créer des dossiers et écrire dans un fichier.</p><ol><li>Créez le dossier <code>tp\docs</code> en une seule commande.</li><li>Placez-vous dans <code>tp\docs</code>.</li><li>Créez <code>a.txt</code> contenant « Bonjour Windows ».</li><li>Ajoutez à la fin la ligne « Deuxieme ligne ».</li><li>Affichez le contenu du fichier.</li><li>Affichez le fichier avec sa taille.</li></ol>
+<details class="hint"><summary>Indices (un par question)</summary><div><ol><li><code>mkdir</code> crée aussi les dossiers intermédiaires.</li><li><code>cd</code> avec un chemin relatif.</li><li><code>echo texte &gt; fichier</code>.</li><li>Un double signe pour ajouter.</li><li><code>type</code>.</li><li>Un simple <code>dir</code> suffit.</li></ol><div class="opts"><b>Sens des options et symboles :</b><ul><li><code>&gt;</code> : écrit dans un fichier en l'écrasant</li><li><code>&gt;&gt;</code> : ajoute à la fin du fichier</li></ul></div></div></details>
+<details class="res"><summary>Résultat attendu</summary><div><pre><span class="c">:: Q1</span>
+<span class="p">C:\Users\alice&gt;</span> mkdir tp\docs
+<span class="c">:: Q2</span>
+<span class="p">C:\Users\alice&gt;</span> cd tp\docs
+<span class="c">:: Q3</span>
+<span class="p">C:\Users\alice\tp\docs&gt;</span> echo Bonjour Windows &gt; a.txt
+<span class="c">:: Q4</span>
+<span class="p">C:\Users\alice\tp\docs&gt;</span> echo Deuxieme ligne &gt;&gt; a.txt
+<span class="c">:: Q5</span>
+<span class="p">C:\Users\alice\tp\docs&gt;</span> type a.txt
+Bonjour Windows
+Deuxieme ligne
+<span class="c">:: Q6</span>
+<span class="p">C:\Users\alice\tp\docs&gt;</span> dir a.txt
+28/09/2026  10:40    35 a.txt</pre><p>La taille peut varier légèrement : <code>echo</code> garde l'espace avant le signe.</p></div></details></div>
+<div class="ex"><h3>Exercice 6 — Copier, renommer, déplacer</h3>
+<p class="lvd" style="margin-top:-6px">Difficulté : <b style="color:var(--ac)">●●○</b> · 7 questions à faire dans l'ordre</p>
+<p><b>Objectif :</b> manipuler des fichiers existants.</p><ol><li>Copiez <code>a.txt</code> en <code>b.txt</code>.</li><li>Renommez <code>b.txt</code> en <code>c.txt</code>.</li><li>Créez le dossier <code>..\archives</code> (à côté de <code>docs</code>).</li><li>Déplacez <code>c.txt</code> dans <code>..\archives</code>.</li><li>Listez le contenu de <code>..\archives</code>.</li><li>Copiez <code>a.txt</code> dans <code>..\archives</code> sous le nom <code>a_copie.txt</code>.</li><li>Listez de nouveau <code>..\archives</code>.</li></ol>
+<details class="hint"><summary>Indices (un par question)</summary><div><ol><li><code>copy source destination</code>.</li><li><code>ren ancien nouveau</code>.</li><li>Le parent s'écrit avec deux points.</li><li><code>move fichier dossier</code>.</li><li>Liste simple, avec option.<div class="kwl">Options utilisées : <code>/b</code> <span class="kw">(bare format)</span></div></li><li>Donnez le nouveau nom dans la destination.</li><li>Même commande qu'à la question 5.<div class="kwl">Options utilisées : <code>/b</code> <span class="kw">(bare format)</span></div></li></ol><div class="opts"><b>Sens des options et symboles :</b><ul><li><code>(aucune)</code> : copy, ren et move prennent seulement des arguments : source puis destination</li><li><code>/b</code> <span class="kw">(bare format)</span> : noms seulement</li></ul></div></div></details>
+<details class="res"><summary>Résultat attendu</summary><div><pre><span class="c">:: Q1</span>
+<span class="p">C:\Users\alice\tp\docs&gt;</span> copy a.txt b.txt
+        1 fichier(s) copié(s).
+<span class="c">:: Q2</span>
+<span class="p">C:\Users\alice\tp\docs&gt;</span> ren b.txt c.txt
+<span class="c">:: Q3</span>
+<span class="p">C:\Users\alice\tp\docs&gt;</span> mkdir ..\archives
+<span class="c">:: Q4</span>
+<span class="p">C:\Users\alice\tp\docs&gt;</span> move c.txt ..\archives
+        1 fichier(s) déplacé(s).
+<span class="c">:: Q5</span>
+<span class="p">C:\Users\alice\tp\docs&gt;</span> dir /b ..\archives
+c.txt
+<span class="c">:: Q6</span>
+<span class="p">C:\Users\alice\tp\docs&gt;</span> copy a.txt ..\archives\a_copie.txt
+        1 fichier(s) copié(s).
+<span class="c">:: Q7</span>
+<span class="p">C:\Users\alice\tp\docs&gt;</span> dir /b ..\archives
+a_copie.txt
+c.txt</pre></div></details></div>
+<div class="ex"><h3>Exercice 7 — Supprimer avec précaution</h3>
+<p class="lvd" style="margin-top:-6px">Difficulté : <b style="color:var(--ac)">●●●</b> · 7 questions à faire dans l'ordre</p>
+<p><b>Objectif :</b> comprendre les options de sécurité.</p><ol><li>Supprimez <code>..\archives\c.txt</code> en demandant confirmation, répondez N.</li><li>Recommencez et répondez O.</li><li>Supprimez <code>..\archives\a_copie.txt</code> sans confirmation.</li><li>Vérifiez que <code>archives</code> est vide.</li><li>Supprimez le dossier vide <code>..\archives</code>.</li><li>Créez <code>..\test</code> contenant un fichier <code>x.txt</code>, puis essayez <code>rmdir ..\test</code>.</li><li>Supprimez <code>..\test</code> avec son contenu, sans question.</li></ol>
+<details class="hint"><summary>Indices (un par question)</summary><div><ol><li><code>del</code> avec l'option de confirmation.<div class="kwl">Options utilisées : <code>/p</code> <span class="kw">(prompt)</span></div></li><li>Même commande.<div class="kwl">Options utilisées : <code>/p</code> <span class="kw">(prompt)</span></div></li><li><code>del</code> sans option : attention, pas de corbeille.</li><li>Liste simple.<div class="kwl">Options utilisées : <code>/b</code> <span class="kw">(bare format)</span></div></li><li><code>rmdir</code> marche sur un dossier vide.</li><li>Fichier vide : <code>type nul &gt; fichier</code>.</li><li>Deux options : sous-dossiers et sans confirmation.<div class="kwl">Options utilisées : <code>/s</code> <span class="kw">(subdirectories)</span>, <code>/q</code> <span class="kw">(quiet)</span></div></li></ol><div class="opts"><b>Sens des options et symboles :</b><ul><li><code>/p</code> <span class="kw">(prompt)</span> : demande O/N avant de supprimer</li><li><code>/s</code> <span class="kw">(subdirectories)</span> : inclut le contenu des sous-dossiers</li><li><code>/q</code> <span class="kw">(quiet)</span> : sans demander de confirmation</li></ul></div></div></details>
+<details class="res"><summary>Résultat attendu</summary><div><pre><span class="c">:: Q1</span>
+<span class="p">C:\Users\alice\tp\docs&gt;</span> del /p ..\archives\c.txt
+C:\Users\alice\tp\archives\c.txt, Supprimer (O/N)? N
+<span class="c">:: Q2</span>
+<span class="p">C:\Users\alice\tp\docs&gt;</span> del /p ..\archives\c.txt
+C:\Users\alice\tp\archives\c.txt, Supprimer (O/N)? O
+<span class="c">:: Q3</span>
+<span class="p">C:\Users\alice\tp\docs&gt;</span> del ..\archives\a_copie.txt
+<span class="c">:: Q4</span>
+<span class="p">C:\Users\alice\tp\docs&gt;</span> dir /b ..\archives
+Fichier introuvable
+<span class="c">:: Q5</span>
+<span class="p">C:\Users\alice\tp\docs&gt;</span> rmdir ..\archives
+<span class="c">:: Q6</span>
+<span class="p">C:\Users\alice\tp\docs&gt;</span> mkdir ..\test
+<span class="p">C:\Users\alice\tp\docs&gt;</span> type nul &gt; ..\test\x.txt
+<span class="p">C:\Users\alice\tp\docs&gt;</span> rmdir ..\test
+Le répertoire n'est pas vide.
+<span class="c">:: Q7</span>
+<span class="p">C:\Users\alice\tp\docs&gt;</span> rmdir /s /q ..\test</pre></div></details></div>
+<div class="ex"><h3>Exercice 8 — Jokers et attributs</h3>
+<p class="lvd" style="margin-top:-6px">Difficulté : <b style="color:var(--ac)">●●●</b> · 8 questions à faire dans l'ordre</p>
+<p><b>Objectif :</b> agir sur plusieurs fichiers à la fois.</p><ol><li>Créez les fichiers vides <code>rapport1.txt</code>, <code>rapport2.txt</code> et <code>rapport10.txt</code>.</li><li>Créez <code>photo_a.jpg</code> et <code>photo_b.jpg</code>.</li><li>Affichez tous les fichiers <code>.txt</code>.</li><li>Affichez les rapports dont le numéro n'a qu'un chiffre.</li><li>Affichez tous les fichiers <code>.jpg</code>.</li><li>Créez le dossier <code>img</code> et copiez-y toutes les <code>photo*</code>.</li><li>Cachez <code>rapport1.txt</code>.</li><li>Affichez uniquement les fichiers cachés.</li></ol>
+<details class="hint"><summary>Indices (un par question)</summary><div><ol><li><code>type nul &gt; nom</code>, une commande par fichier.</li><li>Même méthode.</li><li><code>*</code> remplace n'importe quelle suite de caractères.<div class="kwl">Options utilisées : <code>/b</code> <span class="kw">(bare format)</span></div></li><li><code>?</code> remplace un seul caractère.<div class="kwl">Options utilisées : <code>/b</code> <span class="kw">(bare format)</span></div></li><li>Même idée que la question 3.<div class="kwl">Options utilisées : <code>/b</code> <span class="kw">(bare format)</span></div></li><li><code>copy photo* img</code> après le mkdir.</li><li>Attribut « hidden » à ajouter.<div class="kwl">Options utilisées : <code>+h</code> <span class="kw">(add Hidden attribute)</span></div></li><li>Option des attributs, avec la lettre de l'attribut.<div class="kwl">Options utilisées : <code>/b</code> <span class="kw">(bare format)</span>, <code>/a:h</code> <span class="kw">(attributes: hidden)</span></div></li></ol><div class="opts"><b>Sens des options et symboles :</b><ul><li><code>/b</code> <span class="kw">(bare format)</span> : noms seulement</li><li><code>/a:h</code> <span class="kw">(attributes: hidden)</span> : n'affiche que les fichiers cachés</li><li><code>+h</code> <span class="kw">(add Hidden attribute)</span> : ajoute l'attribut « caché » (-h le retire)</li></ul></div></div></details>
+<details class="res"><summary>Résultat attendu</summary><div><pre><span class="c">:: Q1</span>
+<span class="p">C:\Users\alice\tp\docs&gt;</span> type nul &gt; rapport1.txt
+<span class="p">C:\Users\alice\tp\docs&gt;</span> type nul &gt; rapport2.txt
+<span class="p">C:\Users\alice\tp\docs&gt;</span> type nul &gt; rapport10.txt
+<span class="c">:: Q2</span>
+<span class="p">C:\Users\alice\tp\docs&gt;</span> type nul &gt; photo_a.jpg
+<span class="p">C:\Users\alice\tp\docs&gt;</span> type nul &gt; photo_b.jpg
+<span class="c">:: Q3</span>
+<span class="p">C:\Users\alice\tp\docs&gt;</span> dir /b *.txt
+a.txt
+rapport1.txt
+rapport10.txt
+rapport2.txt
+<span class="c">:: Q4</span>
+<span class="p">C:\Users\alice\tp\docs&gt;</span> dir /b rapport?.txt
+rapport1.txt
+rapport2.txt
+<span class="c">:: Q5</span>
+<span class="p">C:\Users\alice\tp\docs&gt;</span> dir /b *.jpg
+photo_a.jpg
+photo_b.jpg
+<span class="c">:: Q6</span>
+<span class="p">C:\Users\alice\tp\docs&gt;</span> mkdir img
+<span class="p">C:\Users\alice\tp\docs&gt;</span> copy photo* img
+photo_a.jpg
+photo_b.jpg
+        2 fichier(s) copié(s).
+<span class="c">:: Q7</span>
+<span class="p">C:\Users\alice\tp\docs&gt;</span> attrib +h rapport1.txt
+<span class="c">:: Q8</span>
+<span class="p">C:\Users\alice\tp\docs&gt;</span> dir /b /a:h
+rapport1.txt</pre></div></details></div>
+</section>
+<section id="avance"><h2>Partie D — Aller plus loin</h2><p class="lvd">Niveau difficile · combiner les commandes</p>
+<div class="ex"><h3>Exercice 9 — Redirection, tube et filtres</h3>
+<p class="lvd" style="margin-top:-6px">Difficulté : <b style="color:var(--ac)">●●●</b> · 7 questions à faire dans l'ordre</p>
+<p><b>Objectif :</b> enchaîner des commandes.</p><ol><li>Enregistrez la liste simple des fichiers de <code>docs</code> dans <code>liste.txt</code>.</li><li>Affichez <code>liste.txt</code>.</li><li>Affichez-la triée.</li><li>Affichez les lignes contenant « rapport ».</li><li>Comptez-les.</li><li>Affichez les lignes qui ne contiennent pas « rapport ».</li><li>Ajoutez à <code>liste.txt</code> la liste des <code>.jpg</code>, puis comptez les lignes contenant « .jpg ».</li></ol>
+<details class="hint"><summary>Indices (un par question)</summary><div><ol><li>Redirigez la sortie de <code>dir /b</code>.<div class="kwl">Options utilisées : <code>/b</code> <span class="kw">(bare format)</span></div></li><li><code>type</code>.</li><li>Envoyez le contenu à <code>sort</code> avec un tube.</li><li><code>find "mot"</code>.</li><li>Option de comptage de <code>find</code>.<div class="kwl">Options utilisées : <code>/c</code> <span class="kw">(count)</span></div></li><li>Option qui inverse le filtre.<div class="kwl">Options utilisées : <code>/v</code> <span class="kw">(inverse (versus))</span></div></li><li>Ajout avec un double signe, puis le filtre avec comptage.<div class="kwl">Options utilisées : <code>/b</code> <span class="kw">(bare format)</span>, <code>/c</code> <span class="kw">(count)</span></div></li></ol><div class="opts"><b>Sens des options et symboles :</b><ul><li><code>&gt;</code> : écrit dans un fichier en l'écrasant</li><li><code>&gt;&gt;</code> : ajoute à la fin du fichier</li><li><code>|</code> : tube : envoie la sortie à la commande suivante</li><li><code>/c</code> <span class="kw">(count)</span> : compte les lignes trouvées</li><li><code>/v</code> <span class="kw">(inverse (versus))</span> : lignes qui ne contiennent PAS le mot</li><li><code>/b</code> <span class="kw">(bare format)</span> : noms seulement</li></ul></div></div></details>
+<details class="res"><summary>Résultat attendu</summary><div><pre><span class="c">:: Q1</span>
+<span class="p">C:\Users\alice\tp\docs&gt;</span> dir /b &gt; liste.txt
+<span class="c">:: Q2</span>
+<span class="p">C:\Users\alice\tp\docs&gt;</span> type liste.txt
+a.txt
+img
+liste.txt
+photo_a.jpg
+photo_b.jpg
+rapport10.txt
+rapport2.txt
+<span class="c">:: Q3</span>
+<span class="p">C:\Users\alice\tp\docs&gt;</span> type liste.txt | sort
+a.txt
+img
+liste.txt
+photo_a.jpg
+photo_b.jpg
+rapport10.txt
+rapport2.txt
+<span class="c">:: Q4</span>
+<span class="p">C:\Users\alice\tp\docs&gt;</span> type liste.txt | find "rapport"
+rapport10.txt
+rapport2.txt
+<span class="c">:: Q5</span>
+<span class="p">C:\Users\alice\tp\docs&gt;</span> type liste.txt | find /c "rapport"
+2
+<span class="c">:: Q6</span>
+<span class="p">C:\Users\alice\tp\docs&gt;</span> type liste.txt | find /v "rapport"
+a.txt
+img
+liste.txt
+photo_a.jpg
+photo_b.jpg
+<span class="c">:: Q7</span>
+<span class="p">C:\Users\alice\tp\docs&gt;</span> dir /b *.jpg &gt;&gt; liste.txt
+<span class="p">C:\Users\alice\tp\docs&gt;</span> type liste.txt | find /c ".jpg"
+4</pre><p><code>rapport1.txt</code> est caché : il n'apparaît pas dans la liste.</p></div></details></div>
+<div class="ex"><h3>Exercice 10 — Projet final : organiser le dossier d'une école</h3>
+<p class="lvd" style="margin-top:-6px">Difficulté : <b style="color:var(--ac)">●●●</b> · 16 questions à faire dans l'ordre</p>
+<p><b>Objectif :</b> réaliser un projet qui utilise toutes les notions. Partez de votre dossier personnel.</p><ol><li>Créez <code>ecole</code> et placez-vous dedans.</li><li>Créez <code>cours</code>, <code>tp</code> et <code>archives</code> en une commande.</li><li>Créez <code>cours\windows\notes</code> en une commande.</li><li>Dans <code>tp</code>, créez les fichiers vides <code>tp1.txt</code>, <code>tp2.txt</code>, <code>tp3.txt</code> et <code>rapport.md</code>.</li><li>Créez <code>cours\windows\notes\intro.txt</code> avec « Windows est un systeme ».</li><li>Ajoutez la ligne « NT date de 1993 ».</li><li>Vérifiez le contenu de <code>intro.txt</code>.</li><li>Copiez <code>intro.txt</code> dans <code>archives</code> sous le nom <code>intro_copy.txt</code>.</li><li>Renommez <code>tp\rapport.md</code> en <code>rapport_final.md</code>.</li><li>Copiez avec un joker tous les <code>.txt</code> de <code>tp</code> dans <code>archives</code>.</li><li>Supprimez <code>tp\tp3.txt</code>.</li><li>Créez un fichier vide <code>.config</code> et cachez-le.</li><li>Affichez uniquement les fichiers cachés de <code>ecole</code>.</li><li>Enregistrez la liste simple de <code>archives</code> dans <code>liste.txt</code>.</li><li>Comptez les lignes de <code>liste.txt</code> contenant « .txt ».</li><li>Affichez l'arborescence complète avec les fichiers.</li></ol>
+<details class="hint"><summary>Indices (un par question)</summary><div><ol><li><code>mkdir</code> puis <code>cd</code>.</li><li><code>mkdir</code> accepte plusieurs noms.</li><li>Dossiers intermédiaires créés automatiquement.</li><li><code>type nul &gt; tp\nom</code>, quatre commandes.</li><li><code>echo</code> et le signe qui écrase.</li><li>Le signe qui ajoute.</li><li><code>type</code>.</li><li><code>copy</code> avec un nouveau nom.</li><li>Pour <code>ren</code>, le nouveau nom est sans chemin.</li><li><code>copy tp\*.txt archives</code>.</li><li><code>del</code>.</li><li>Deux commandes : création puis attribut.<div class="kwl">Options utilisées : <code>+h</code> <span class="kw">(add Hidden attribute)</span></div></li><li>Option des attributs.<div class="kwl">Options utilisées : <code>/b</code> <span class="kw">(bare format)</span>, <code>/a:h</code> <span class="kw">(attributes: hidden)</span></div></li><li>Redirection de <code>dir /b archives</code>.<div class="kwl">Options utilisées : <code>/b</code> <span class="kw">(bare format)</span></div></li><li>Tube vers <code>find</code> avec comptage.<div class="kwl">Options utilisées : <code>/c</code> <span class="kw">(count)</span></div></li><li><code>tree</code> avec son option.<div class="kwl">Options utilisées : <code>/f</code> <span class="kw">(files)</span></div></li></ol><div class="opts"><b>Sens des options et symboles :</b><ul><li><code>/b</code> <span class="kw">(bare format)</span> : noms seulement</li><li><code>+h</code> <span class="kw">(add Hidden attribute)</span> : ajoute l'attribut « caché »</li><li><code>/a:h</code> <span class="kw">(attributes: hidden)</span> : n'affiche que les fichiers cachés</li><li><code>/c</code> <span class="kw">(count)</span> : compte les lignes</li><li><code>/f</code> <span class="kw">(files)</span> : affiche aussi les fichiers (avec tree)</li></ul></div></div></details>
+<details class="res"><summary>Résultat attendu</summary><div><pre><span class="c">:: Q1</span>
+<span class="p">C:\Users\alice&gt;</span> mkdir ecole
+<span class="p">C:\Users\alice&gt;</span> cd ecole
+<span class="c">:: Q2</span>
+<span class="p">C:\Users\alice\ecole&gt;</span> mkdir cours tp archives
+<span class="c">:: Q3</span>
+<span class="p">C:\Users\alice\ecole&gt;</span> mkdir cours\windows\notes
+<span class="c">:: Q4</span>
+<span class="p">C:\Users\alice\ecole&gt;</span> type nul &gt; tp\tp1.txt
+<span class="p">C:\Users\alice\ecole&gt;</span> type nul &gt; tp\tp2.txt
+<span class="p">C:\Users\alice\ecole&gt;</span> type nul &gt; tp\tp3.txt
+<span class="p">C:\Users\alice\ecole&gt;</span> type nul &gt; tp\rapport.md
+<span class="c">:: Q5</span>
+<span class="p">C:\Users\alice\ecole&gt;</span> echo Windows est un systeme &gt; cours\windows\notes\intro.txt
+<span class="c">:: Q6</span>
+<span class="p">C:\Users\alice\ecole&gt;</span> echo NT date de 1993 &gt;&gt; cours\windows\notes\intro.txt
+<span class="c">:: Q7</span>
+<span class="p">C:\Users\alice\ecole&gt;</span> type cours\windows\notes\intro.txt
+Windows est un systeme
+NT date de 1993
+<span class="c">:: Q8</span>
+<span class="p">C:\Users\alice\ecole&gt;</span> copy cours\windows\notes\intro.txt archives\intro_copy.txt
+<span class="c">:: Q9</span>
+<span class="p">C:\Users\alice\ecole&gt;</span> ren tp\rapport.md rapport_final.md
+<span class="c">:: Q10</span>
+<span class="p">C:\Users\alice\ecole&gt;</span> copy tp\*.txt archives
+tp\tp1.txt
+tp\tp2.txt
+tp\tp3.txt
+        3 fichier(s) copié(s).
+<span class="c">:: Q11</span>
+<span class="p">C:\Users\alice\ecole&gt;</span> del tp\tp3.txt
+<span class="c">:: Q12</span>
+<span class="p">C:\Users\alice\ecole&gt;</span> type nul &gt; .config
+<span class="p">C:\Users\alice\ecole&gt;</span> attrib +h .config
+<span class="c">:: Q13</span>
+<span class="p">C:\Users\alice\ecole&gt;</span> dir /b /a:h
+.config
+<span class="c">:: Q14</span>
+<span class="p">C:\Users\alice\ecole&gt;</span> dir /b archives &gt; liste.txt
+<span class="c">:: Q15</span>
+<span class="p">C:\Users\alice\ecole&gt;</span> type liste.txt | find /c ".txt"
+4
+<span class="c">:: Q16</span>
+<span class="p">C:\Users\alice\ecole&gt;</span> tree /f
+C:\USERS\ALICE\ECOLE
+    liste.txt
+
++---archives
+|       intro_copy.txt
+|       tp1.txt
+|       tp2.txt
+|       tp3.txt
+|
++---cours
+|   \---windows
+|       \---notes
+|               intro.txt
+|
+\---tp
+        rapport_final.md
+        tp1.txt
+        tp2.txt</pre><p>L'affichage de <code>tree</code> peut varier selon la langue de Windows. Le fichier caché <code>.config</code> n'apparaît pas dans <code>tree</code>.</p></div></details></div>
+</section>
+</main></div><div id="bar"></div>
+<script>
+(function(){
+var bar=document.getElementById("bar"),f=document.getElementById("pgf"),t=document.getElementById("pgt");
+function up(){var h=document.documentElement.scrollHeight-innerHeight,r=h>0?Math.min(1,Math.max(0,scrollY/h)):0,v=Math.round(r*100);
+bar.style.width=v+"%";f.style.width=v+"%";t.textContent=v+" % parcouru";}
+addEventListener("scroll",up,{passive:true});up();
+var secs=[].slice.call(document.querySelectorAll("main section")),links=[].slice.call(document.querySelectorAll("nav a"));
+secs.forEach(function(sec,i){var prev=i?secs[i-1]:document.getElementById("accueil"),next=secs[i+1];
+var d=document.createElement("div");d.className="pn";
+var pt=i?prev.querySelector("h2").textContent:"Accueil";
+d.innerHTML='<a href="#'+prev.id+'">\u2190 '+pt+'</a>'+(next?'<a href="#'+next.id+'">'+next.querySelector("h2").textContent+' \u2192</a>':'');
+sec.appendChild(d);});
+if("IntersectionObserver" in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){links.forEach(function(a){a.classList.toggle("on",a.getAttribute("href")==="#"+e.target.id);});}});},{rootMargin:"-20% 0px -70% 0px"});
+io.observe(document.getElementById("accueil"));secs.forEach(function(x){io.observe(x);});}
+})();
+</script>
+</body></html>

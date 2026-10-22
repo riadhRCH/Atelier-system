@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gestion de l'Arborescence et des Fichiers — Chapitre 3</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f5f7fa;--card:#fff;--ink:#1c2836;--mut:#5b6b7c;--line:#dde4ec;--ac:#0e6b8c;--ac2:#e2eef3;--warn:#fff6e0;--warnl:#e6b422;--ok:#e8f5ee;--okl:#2e8b57;--term:#14202b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:16px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
+code,pre,kbd{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace}
+.wrap{display:grid;grid-template-columns:250px minmax(0,1fr);max-width:1180px;margin:0 auto}
+nav{position:sticky;top:0;align-self:start;height:100vh;overflow:auto;padding:28px 20px;border-right:1px solid var(--line);background:var(--card)}
+nav b{display:block;font-size:15px;margin-bottom:14px;color:var(--ac)}
+nav a{display:block;padding:6px 10px;margin:2px 0;color:var(--ink);text-decoration:none;border-radius:6px;font-size:14px}
+nav a:hover,nav a:focus-visible{background:var(--ac2);outline:none}
+main{padding:36px 40px 80px;min-width:0}
+header.hero{border-bottom:3px solid var(--ac);padding-bottom:22px;margin-bottom:30px}
+.hero h1{font-size:2.2rem;line-height:1.2;margin:0 0 8px}
+.hero p{color:var(--mut);margin:0;max-width:62ch}
+section{margin-bottom:56px}
+h2{font-size:1.6rem;margin:0 0 16px;padding-top:8px;border-top:1px solid var(--line)}
+h3{font-size:1.15rem;margin:26px 0 8px;color:var(--ac)}
+p,li{max-width:76ch}
+.obj{background:var(--ac2);border-left:4px solid var(--ac);padding:12px 18px;border-radius:0 8px 8px 0;margin:14px 0}
+.note{background:var(--warn);border-left:4px solid var(--warnl);padding:10px 16px;border-radius:0 8px 8px 0;margin:14px 0}
+figure{margin:18px 0;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:13px;color:var(--mut);margin-top:8px;text-align:center}
+pre{background:var(--term);color:#dfe9f2;padding:14px 16px;border-radius:8px;overflow-x:auto;font-size:14px;line-height:1.5;margin:10px 0}
+pre .p{color:#7fd1a0}pre .c{color:#8aa0b3}pre .o{color:#f0c674}
+:not(pre)>code{background:#e9eff5;padding:1px 6px;border-radius:4px;font-size:.9em}
+table{border-collapse:collapse;width:100%;background:var(--card);font-size:14.5px;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:8px 12px;text-align:left;vertical-align:top}
+th{background:var(--ac2)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.card h4{margin:0 0 6px;font-size:1.02rem}
+.card ol,.card ul{padding-left:20px;margin:6px 0}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:99px;background:var(--ac2);color:var(--ac);margin-bottom:6px}
+.ex{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 20px;margin:18px 0}
+.ex h3{margin-top:0}
+details{margin:8px 0;border-radius:8px;border:1px solid var(--line);background:#fbfcfd}
+summary{cursor:pointer;padding:8px 14px;font-weight:500}
+summary:focus-visible{outline:2px solid var(--ac)}
+details>div{padding:0 14px 10px}
+details.hint{border-color:var(--warnl)}details.hint summary{background:var(--warn)}
+details.res{border-color:var(--okl)}details.res summary{background:var(--ok)}
+footer{color:var(--mut);font-size:13px;border-top:1px solid var(--line);padding-top:14px}
+@media(max-width:820px){.wrap{display:block}nav{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line)}main{padding:24px 16px 60px}.hero h1{font-size:1.7rem}}
+.cover{min-height:70vh;display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center;background:linear-gradient(135deg,#fff 55%,#e2eef3);border:1px solid var(--line);border-radius:14px;padding:44px;margin-bottom:48px}
+.cover h1{font-size:2.5rem;line-height:1.15;margin:6px 0 14px}.cover .ch{color:var(--ac);font-weight:600;font-size:1.15rem}
+.btn{display:inline-block;background:var(--ac);color:#fff;padding:11px 22px;border-radius:8px;text-decoration:none;font-weight:500;margin-top:8px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;align-items:center}
+@media(max-width:820px){.cover{grid-template-columns:1fr;padding:24px;min-height:auto}.cover h1{font-size:2rem}}
+.lvl{background:var(--ac);color:#fff;padding:8px 14px;border-radius:8px;margin:34px 0 4px}.lvd{color:var(--mut);margin:4px 0 8px}
+h1,h2,.cover h1{font-family:"Source Serif 4",Georgia,"Times New Roman",serif}
+h2{border-top:0;border-left:6px solid var(--ac);background:var(--card);padding:10px 16px;border-radius:0 8px 8px 0;box-shadow:0 1px 0 var(--line)}
+.brand{border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:14px}
+.brand span{display:block;font-size:12.5px;color:var(--mut)}.brand b{margin:2px 0 10px}
+.pg{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin-bottom:4px}.pg i{display:block;height:100%;width:0;background:var(--ac);transition:width .2s}
+nav a.on{background:var(--ac2);color:var(--ac);font-weight:600;box-shadow:inset 3px 0 var(--ac)}
+#bar{position:fixed;top:0;left:0;height:4px;width:0;background:var(--ac);z-index:50;padding-top:env(safe-area-inset-top,0px)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}.chips span{background:var(--card);border:1px solid var(--line);border-radius:99px;padding:3px 12px;font-size:13.5px;color:var(--mut)}
+.goals{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--ac);border-radius:8px;padding:12px 18px;margin:14px 0 18px;font-size:15px}.goals ul{margin:6px 0 0;padding-left:20px}
+.pn{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:28px;padding-top:14px;border-top:1px dashed var(--line)}
+.pn a{color:var(--ac);text-decoration:none;font-weight:500;padding:8px 14px;border:1px solid var(--line);background:var(--card);border-radius:8px}.pn a:hover,.pn a:focus-visible{background:var(--ac2);outline:none}
+details{overflow:hidden;border-radius:10px;border-width:1.5px;border-style:solid}
+details>summary{border-radius:0;list-style-position:inside;padding:9px 16px}
+details[open]>summary{border-bottom:1px solid var(--line)}
+details>div{padding:10px 16px 12px}details>div>pre{margin:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav aria-label="Sommaire">
+<div class="brand"><span>Systèmes d'exploitation · 1re année</span><b>Chapitre 3 — Arborescence & Fichiers</b><div class="pg"><i id="pgf"></i></div><span id="pgt">0 % parcouru</span></div>
+<a href="#accueil">Accueil</a>
+<a href="#fhs">1. Structure du disque (FHS)</a>
+<a href="#nav">2. Navigation</a>
+<a href="#consult">3. Consultation</a>
+<a href="#actions">4. Actions sur les fichiers</a>
+<a href="#liens">5. Liens physiques et symboliques</a>
+<a href="#tp">6. Exercices pratiques</a>
+</nav>
+<main>
+<header class="cover" id="accueil">
+<div>
+<div class="ch">Chapitre 3</div>
+<h1>Gestion de l'Arborescence et des Fichiers</h1>
+<p>Apprendre à se déplacer dans le système de fichiers Linux, à lire, créer, copier, déplacer et supprimer des fichiers, et comprendre les liens.</p>
+<div class="chips"><span>Niveau : débutant</span><span>Durée : environ 3 h</span><span>Commandes essentielles + TP</span></div>
+<div class="goals"><b>À la fin du chapitre, vous saurez :</b><ul>
+<li>retrouver les répertoires importants du FHS (<code>/bin</code>, <code>/etc</code>, <code>/home</code>…)</li>
+<li>utiliser les chemins absolus et relatifs</li>
+<li>consulter et manipuler fichiers et dossiers</li>
+<li>créer des liens symboliques et comprendre les liens physiques</li>
+</ul></div>
+<a class="btn" href="#fhs">Commencer le cours</a>
+</div>
+<div>
+<svg viewBox="0 0 220 200" role="img" aria-label="Arborescence de fichiers" style="max-width:240px;margin:auto">
+  <rect x="80" y="10" width="60" height="28" rx="6" fill="#0e6b8c"/>
+  <text x="110" y="29" text-anchor="middle" fill="#fff" font-family="IBM Plex Sans,sans-serif" font-size="13" font-weight="600">/</text>
+  <line x1="110" y1="38" x2="110" y2="55" stroke="#8798a9"/>
+  <line x1="40" y1="55" x2="180" y2="55" stroke="#8798a9"/>
+  <line x1="40" y1="55" x2="40" y2="70" stroke="#8798a9"/>
+  <line x1="110" y1="55" x2="110" y2="70" stroke="#8798a9"/>
+  <line x1="180" y1="55" x2="180" y2="70" stroke="#8798a9"/>
+  <rect x="10" y="70" width="60" height="26" rx="5" fill="#e2eef3" stroke="#0e6b8c"/>
+  <text x="40" y="88" text-anchor="middle" fill="#1c2836" font-size="12" font-family="IBM Plex Sans,sans-serif">home</text>
+  <rect x="80" y="70" width="60" height="26" rx="5" fill="#e2eef3" stroke="#0e6b8c"/>
+  <text x="110" y="88" text-anchor="middle" fill="#1c2836" font-size="12" font-family="IBM Plex Sans,sans-serif">etc</text>
+  <rect x="150" y="70" width="60" height="26" rx="5" fill="#e2eef3" stroke="#0e6b8c"/>
+  <text x="180" y="88" text-anchor="middle" fill="#1c2836" font-size="12" font-family="IBM Plex Sans,sans-serif">var</text>
+  <line x1="40" y1="96" x2="40" y2="115" stroke="#8798a9"/>
+  <rect x="5" y="115" width="70" height="26" rx="5" fill="#fff" stroke="#8798a9"/>
+  <text x="40" y="133" text-anchor="middle" fill="#1c2836" font-size="11" font-family="IBM Plex Sans,sans-serif">utilisateur</text>
+  <line x1="40" y1="141" x2="40" y2="160" stroke="#8798a9"/>
+  <rect x="5" y="160" width="70" height="26" rx="5" fill="#fff" stroke="#8798a9"/>
+  <text x="40" y="178" text-anchor="middle" fill="#1c2836" font-size="11" font-family="IBM Plex Sans,sans-serif">Documents</text>
+</svg>
+</div>
+</header>
+
+<!-- ========== 1. FHS ========== -->
+<section id="fhs">
+<h2>1. Structure du disque — Le FHS</h2>
+<div class="obj"><b>Objectif :</b> connaître l’organisation standard des dossiers sous Linux (Filesystem Hierarchy Standard).</div>
+
+<p>Sous Linux, tous les fichiers et dossiers sont organisés sous une <b>seule racine</b> : <code>/</code>. Cette organisation suit une norme appelée <b>FHS</b> (Filesystem Hierarchy Standard).</p>
+
+<table>
+<tr><th>Répertoire</th><th>Rôle principal</th></tr>
+<tr><td><code>/</code></td><td>Racine de tout le système</td></tr>
+<tr><td><code>/bin</code></td><td>Commandes essentielles (<code>ls</code>, <code>cp</code>, <code>mv</code>…)</td></tr>
+<tr><td><code>/sbin</code></td><td>Commandes d’administration (réservées au root)</td></tr>
+<tr><td><code>/etc</code></td><td>Fichiers de configuration du système</td></tr>
+<tr><td><code>/home</code></td><td>Dossiers personnels des utilisateurs</td></tr>
+<tr><td><code>/root</code></td><td>Dossier personnel de l’administrateur (root)</td></tr>
+<tr><td><code>/var</code></td><td>Données variables (logs, mails, cache…)</td></tr>
+<tr><td><code>/tmp</code></td><td>Fichiers temporaires</td></tr>
+<tr><td><code>/usr</code></td><td>Programmes et bibliothèques de l’utilisateur</td></tr>
+<tr><td><code>/dev</code></td><td>Périphériques (disques, USB…)</td></tr>
+<tr><td><code>/proc</code></td><td>Informations système (virtuel)</td></tr>
+<tr><td><code>/boot</code></td><td>Fichiers de démarrage du système</td></tr>
+</table>
+
+<div class="note"><b>À retenir :</b> Votre dossier personnel se trouve toujours dans <code>/home/votre_nom</code>. C’est là que vous avez le droit d’écrire librement.</div>
+
+<pre><span class="p">$</span> ls /
+<span class="c"># bin  boot  dev  etc  home  lib  media  mnt  opt  proc  root  run  sbin  tmp  usr  var</span></pre>
+</section>
+
+<!-- ========== 2. NAVIGATION ========== -->
+<section id="nav">
+<h2>2. Navigation dans l’arborescence</h2>
+<div class="obj"><b>Objectif :</b> se déplacer efficacement avec <code>cd</code>, comprendre les chemins absolus et relatifs.</div>
+
+<h3>Répertoire courant et parent</h3>
+<ul>
+<li><b>Répertoire courant</b> : l’endroit où vous vous trouvez en ce moment (<code>pwd</code>)</li>
+<li><b>Répertoire parent</b> : le dossier au-dessus (<code>..</code>)</li>
+<li><code>.</code> signifie « ici » (le dossier courant)</li>
+<li><code>~</code> signifie « mon dossier personnel »</li>
+</ul>
+
+<pre><span class="p">$</span> pwd
+/home/etudiant
+<span class="p">$</span> cd Documents
+<span class="p">$</span> pwd
+/home/etudiant/Documents
+<span class="p">$</span> cd ..
+<span class="p">$</span> pwd
+/home/etudiant
+<span class="p">$</span> cd /
+<span class="p">$</span> pwd
+/
+<span class="p">$</span> cd
+<span class="p">$</span> pwd
+/home/etudiant</pre>
+
+<h3>Chemins absolus vs relatifs</h3>
+<table>
+<tr><th>Type</th><th>Commence par</th><th>Exemple</th><th>Signification</th></tr>
+<tr><td><b>Absolu</b></td><td><code>/</code></td><td><code>/home/etudiant/tp</code></td><td>Depuis la racine</td></tr>
+<tr><td><b>Relatif</b></td><td>rien ou <code>.</code> ou <code>..</code></td><td><code>tp</code> ou <code>../Documents</code></td><td>Depuis l’endroit actuel</td></tr>
+</table>
+
+<div class="grid">
+<div class="card"><h4>Chemin absolu</h4><p>Fonctionne toujours, peu importe où vous êtes.<br><code>cd /home/etudiant/Documents</code></p></div>
+<div class="card"><h4>Chemin relatif</h4><p>Dépend de votre position actuelle.<br><code>cd Documents</code> (si vous êtes déjà dans /home/etudiant)</p></div>
+</div>
+
+<pre><span class="p">$</span> cd /etc          <span class="c"># chemin absolu</span>
+<span class="p">$</span> cd ../home       <span class="c"># chemin relatif (remonter puis aller dans home)</span>
+<span class="p">$</span> cd ~             <span class="c"># raccourci vers le dossier personnel</span>
+<span class="p">$</span> cd               <span class="c"># idem : retour à la maison</span></pre>
+</section>
+
+<!-- ========== 3. CONSULTATION ========== -->
+<section id="consult">
+<h2>3. Commandes de consultation</h2>
+<div class="obj"><b>Objectif :</b> lire le contenu des dossiers et des fichiers sans les modifier.</div>
+
+<table>
+<tr><th>Commande</th><th>Rôle</th><th>Exemple utile</th></tr>
+<tr><td><code>pwd</code></td><td>Afficher le répertoire courant</td><td><code>pwd</code></td></tr>
+<tr><td><code>ls</code></td><td>Lister le contenu</td><td><code>ls -lah</code></td></tr>
+<tr><td><code>cat</code></td><td>Afficher tout le fichier</td><td><code>cat fichier.txt</code></td></tr>
+<tr><td><code>more</code></td><td>Afficher page par page</td><td><code>more grandfichier.txt</code></td></tr>
+<tr><td><code>less</code></td><td>Navigation confortable (recommandé)</td><td><code>less fichier.txt</code></td></tr>
+<tr><td><code>head</code></td><td>Afficher le début</td><td><code>head -n 5 fichier.txt</code></td></tr>
+<tr><td><code>tail</code></td><td>Afficher la fin</td><td><code>tail -n 10 fichier.txt</code></td></tr>
+</table>
+
+<h3>Options importantes de ls</h3>
+<pre><span class="p">$</span> ls -l          <span class="c"># format long (droits, taille, date)</span>
+<span class="p">$</span> ls -a          <span class="c"># affiche aussi les fichiers cachés (ceux qui commencent par .)</span>
+<span class="p">$</span> ls -h          <span class="c"># tailles lisibles (K, M, G)</span>
+<span class="p">$</span> ls -lah        <span class="c"># les trois options combinées</span>
+<span class="p">$</span> ls -R          <span class="c"># affiche aussi les sous-dossiers (récursif)</span></pre>
+
+<div class="note"><b>Astuce :</b> Préférez <code>less</code> à <code>more</code>. Avec <code>less</code> vous pouvez monter et descendre, chercher un mot avec <code>/</code>, et quitter avec <code>q</code>.</div>
+</section>
+
+<!-- ========== 4. ACTIONS ========== -->
+<section id="actions">
+<h2>4. Commandes d’action</h2>
+<div class="obj"><b>Objectif :</b> créer, copier, déplacer, renommer et supprimer fichiers et dossiers.</div>
+
+<table>
+<tr><th>Commande</th><th>Rôle</th><th>Exemple</th></tr>
+<tr><td><code>mkdir</code></td><td>Créer un dossier</td><td><code>mkdir tp</code></td></tr>
+<tr><td><code>mkdir -p</code></td><td>Créer avec les parents</td><td><code>mkdir -p cours/linux/notes</code></td></tr>
+<tr><td><code>touch</code></td><td>Créer un fichier vide</td><td><code>touch rapport.txt</code></td></tr>
+<tr><td><code>cp</code></td><td>Copier</td><td><code>cp a.txt b.txt</code></td></tr>
+<tr><td><code>cp -r</code></td><td>Copier un dossier</td><td><code>cp -r dossier1 dossier2</code></td></tr>
+<tr><td><code>mv</code></td><td>Déplacer ou renommer</td><td><code>mv ancien.txt nouveau.txt</code></td></tr>
+<tr><td><code>rm</code></td><td>Supprimer un fichier</td><td><code>rm fichier.txt</code></td></tr>
+<tr><td><code>rm -r</code></td><td>Supprimer un dossier</td><td><code>rm -r dossier</code></td></tr>
+<tr><td><code>rmdir</code></td><td>Supprimer un dossier vide</td><td><code>rmdir dossiervide</code></td></tr>
+</table>
+
+<pre><span class="p">$</span> mkdir -p ~/projet/docs
+<span class="p">$</span> touch ~/projet/docs/intro.txt
+<span class="p">$</span> echo "Premier texte" > ~/projet/docs/intro.txt
+<span class="p">$</span> cp ~/projet/docs/intro.txt ~/projet/docs/intro_copie.txt
+<span class="p">$</span> mv ~/projet/docs/intro_copie.txt ~/projet/docs/backup.txt
+<span class="p">$</span> rm ~/projet/docs/backup.txt</pre>
+
+<div class="note"><b>Attention :</b> <code>rm</code> ne met <b>pas</b> à la corbeille. Une fois supprimé, c’est généralement définitif. Toujours vérifier avec <code>ls</code> avant de supprimer avec un joker.</div>
+</section>
+
+<!-- ========== 5. LIENS ========== -->
+<section id="liens">
+<h2>5. Liens physiques et symboliques</h2>
+<div class="obj"><b>Objectif :</b> comprendre la différence entre lien physique et lien symbolique, et savoir utiliser <code>ln</code>.</div>
+
+<p>Un <b>lien</b> permet d’avoir plusieurs noms qui pointent vers le même contenu.</p>
+
+<div class="grid">
+<div class="card">
+<h4>Lien physique (hard link)</h4>
+<p>Plusieurs noms pour le <b>même fichier</b> sur le disque.</p>
+<ul>
+<li>Créé avec <code>ln source cible</code></li>
+<li>Ne fonctionne pas entre partitions différentes</li>
+<li>Ne fonctionne pas sur les dossiers</li>
+</ul>
+</div>
+<div class="card">
+<h4>Lien symbolique (soft link)</h4>
+<p>Un raccourci qui pointe vers un autre fichier ou dossier.</p>
+<ul>
+<li>Créé avec <code>ln -s source cible</code></li>
+<li>Fonctionne partout</li>
+<li>Peut pointer vers un dossier</li>
+<li>Se casse si la cible est supprimée</li>
+</ul>
+</div>
+</div>
+
+<pre><span class="p">$</span> echo "contenu important" > original.txt
+<span class="p">$</span> ln original.txt physique.txt          <span class="c"># lien physique</span>
+<span class="p">$</span> ln -s original.txt symbolique.txt     <span class="c"># lien symbolique</span>
+<span class="p">$</span> ls -l
+<span class="c"># -rw-r--r-- 2 user user 18 ... original.txt</span>
+<span class="c"># -rw-r--r-- 2 user user 18 ... physique.txt</span>
+<span class="c"># lrwxrwxrwx 1 user user 12 ... symbolique.txt -> original.txt</span></pre>
+
+<div class="note"><b>En pratique :</b> On utilise presque toujours les <b>liens symboliques</b> (<code>ln -s</code>). Ils sont plus souples et plus sûrs pour débuter.</div>
+</section>
+
+<!-- ========== 6. TP ========== -->
+<section id="tp">
+<h2>6. Exercices pratiques (TP)</h2>
+<div class="obj">Ouvrez un terminal et réalisez les exercices dans l’ordre. L’objectif est de manipuler vraiment l’arborescence.</div>
+
+<div class="ex">
+<h3>Exercice 1 — Exploration</h3>
+<p>1. Affichez le contenu de la racine.<br>
+2. Allez dans <code>/etc</code> puis revenez dans votre dossier personnel.<br>
+3. Affichez votre répertoire courant à chaque étape.</p>
+<details class="res"><summary>Correction</summary><div><pre><span class="p">$</span> ls /
+<span class="p">$</span> cd /etc
+<span class="p">$</span> pwd
+<span class="p">$</span> cd
+<span class="p">$</span> pwd</pre></div></details>
+</div>
+
+<div class="ex">
+<h3>Exercice 2 — Création d’arborescence</h3>
+<p>Créez l’arborescence suivante en utilisant le moins de commandes possible :</p>
+<pre>~/cours/
+├── linux/
+│   ├── notes/
+│   └── tp/
+└── reseaux/</pre>
+<details class="res"><summary>Correction</summary><div><pre><span class="p">$</span> mkdir -p ~/cours/linux/notes ~/cours/linux/tp ~/cours/reseaux</pre></div></details>
+</div>
+
+<div class="ex">
+<h3>Exercice 3 — Manipulation de fichiers</h3>
+<p>1. Dans <code>~/cours/linux/tp</code>, créez les fichiers <code>exo1.txt</code>, <code>exo2.txt</code> et <code>rapport.txt</code>.<br>
+2. Écrivez « Chapitre 3 » dans <code>rapport.txt</code>.<br>
+3. Copiez <code>rapport.txt</code> vers <code>~/cours/linux/notes/</code>.<br>
+4. Renommez la copie en <code>rapport_final.txt</code>.<br>
+5. Supprimez <code>exo2.txt</code>.</p>
+<details class="res"><summary>Correction</summary><div><pre><span class="p">$</span> cd ~/cours/linux/tp
+<span class="p">$</span> touch exo1.txt exo2.txt rapport.txt
+<span class="p">$</span> echo "Chapitre 3" > rapport.txt
+<span class="p">$</span> cp rapport.txt ~/cours/linux/notes/
+<span class="p">$</span> mv ~/cours/linux/notes/rapport.txt ~/cours/linux/notes/rapport_final.txt
+<span class="p">$</span> rm exo2.txt</pre></div></details>
+</div>
+
+<div class="ex">
+<h3>Exercice 4 — Liens</h3>
+<p>1. Créez un fichier <code>original.txt</code> contenant le texte « Lien test ».<br>
+2. Créez un lien symbolique nommé <code>raccourci.txt</code> vers ce fichier.<br>
+3. Affichez les détails avec <code>ls -l</code>.<br>
+4. Affichez le contenu via le lien symbolique.</p>
+<details class="res"><summary>Correction</summary><div><pre><span class="p">$</span> echo "Lien test" > original.txt
+<span class="p">$</span> ln -s original.txt raccourci.txt
+<span class="p">$</span> ls -l
+<span class="p">$</span> cat raccourci.txt</pre></div></details>
+</div>
+
+<!-- ========== TP LONG ========== -->
+<div class="lvl">TP Principal — Projet complet (à faire en fin de séance)</div>
+<p class="lvd">Ce TP regroupe tout ce que vous avez appris dans le chapitre.</p>
+
+<div class="ex">
+<h3>TP — Organisation d’un espace de travail étudiant</h3>
+
+<p><b>Consignes :</b> Réalisez les étapes suivantes <b>dans l’ordre</b>.</p>
+
+<ol>
+<li>Créez le dossier <code>~/etudes</code> puis placez-vous dedans.</li>
+<li>Créez en <b>une seule commande</b> les dossiers : <code>cours</code>, <code>tp</code>, <code>projets</code>, <code>archives</code>.</li>
+<li>Créez le chemin complet <code>cours/linux/notes</code> et <code>cours/linux/exercices</code>.</li>
+<li>Dans <code>tp</code>, créez les fichiers vides : <code>tp1.txt</code>, <code>tp2.txt</code>, <code>tp3.txt</code>, <code>compte_rendu.md</code>.</li>
+<li>Écrivez dans <code>tp/tp1.txt</code> le texte : <code>Premier TP Linux</code></li>
+<li>Ajoutez à la fin de ce fichier la ligne : <code>Chapitre 3 terminé</code> (sans effacer la première ligne).</li>
+<li>Copiez tous les fichiers <code>.txt</code> de <code>tp</code> vers <code>archives</code> (avec un joker).</li>
+<li>Renommez <code>tp/compte_rendu.md</code> en <code>tp/compte_rendu_final.md</code>.</li>
+<li>Créez un lien symbolique nommé <code>lien_notes</code> dans <code>~/etudes</code> qui pointe vers <code>cours/linux/notes</code>.</li>
+<li>Créez un fichier caché <code>.config</code> dans <code>~/etudes</code>.</li>
+<li>Affichez toute l’arborescence de <code>~/etudes</code> avec <code>ls -laR</code>.</li>
+<li>Vérifiez le contenu de <code>tp1.txt</code> via son chemin dans <code>archives</code>.</li>
+</ol>
+
+<details class="hint"><summary>Indices</summary><div>
+<ol>
+<li><code>mkdir</code> puis <code>cd</code></li>
+<li><code>mkdir</code> accepte plusieurs noms</li>
+<li><code>mkdir -p</code></li>
+<li><code>touch</code></li>
+<li><code>echo "texte" > fichier</code></li>
+<li><code>echo "texte" >> fichier</code> (deux chevrons)</li>
+<li><code>cp tp/*.txt archives/</code></li>
+<li><code>mv</code></li>
+<li><code>ln -s</code></li>
+<li>Nom qui commence par un point</li>
+<li><code>ls -laR ~/etudes</code></li>
+<li><code>cat archives/tp1.txt</code></li>
+</ol>
+</div></details>
+
+<details class="res"><summary>Correction complète</summary><div><pre><span class="p">$</span> mkdir ~/etudes
+<span class="p">$</span> cd ~/etudes
+
+<span class="p">$</span> mkdir cours tp projets archives
+
+<span class="p">$</span> mkdir -p cours/linux/notes cours/linux/exercices
+
+<span class="p">$</span> touch tp/tp1.txt tp/tp2.txt tp/tp3.txt tp/compte_rendu.md
+
+<span class="p">$</span> echo "Premier TP Linux" > tp/tp1.txt
+
+<span class="p">$</span> echo "Chapitre 3 terminé" >> tp/tp1.txt
+
+<span class="p">$</span> cp tp/*.txt archives/
+
+<span class="p">$</span> mv tp/compte_rendu.md tp/compte_rendu_final.md
+
+<span class="p">$</span> ln -s cours/linux/notes lien_notes
+
+<span class="p">$</span> touch .config
+
+<span class="p">$</span> ls -laR ~/etudes
+
+<span class="p">$</span> cat archives/tp1.txt</pre></div></details>
+</div>
+
+<div class="note"><b>Objectif du TP :</b> À la fin, vous devez savoir créer une arborescence, manipuler des fichiers, utiliser les jokers et créer un lien symbolique sans regarder le cours.</div>
+</section>
+
+<footer>Chapitre 3 — Gestion de l'Arborescence et des Fichiers</footer>
+</main>
+</div>
+<div id="bar"></div>
+<script>
+(function(){
+var bar=document.getElementById("bar"),f=document.getElementById("pgf"),t=document.getElementById("pgt");
+function up(){var h=document.documentElement.scrollHeight-innerHeight,r=h>0?Math.min(1,Math.max(0,scrollY/h)):0,v=Math.round(r*100);
+bar.style.width=v+"%";f.style.width=v+"%";t.textContent=v+" % parcouru";}
+addEventListener("scroll",up,{passive:true});up();
+var secs=[].slice.call(document.querySelectorAll("main section")),links=[].slice.call(document.querySelectorAll("nav a"));
+secs.forEach(function(sec,i){var prev=i?secs[i-1]:document.getElementById("accueil"),next=secs[i+1];
+var d=document.createElement("div");d.className="pn";
+var pt=i?prev.querySelector("h2").textContent:"Accueil";
+d.innerHTML='<a href="#'+prev.id+'">\u2190 '+pt+'</a>'+(next?'<a href="#'+next.id+'">'+next.querySelector("h2").textContent+' \u2192</a>':'');
+sec.appendChild(d);});
+if("IntersectionObserver" in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){links.forEach(function(a){a.classList.toggle("on",a.getAttribute("href")==="#"+e.target.id);});}});},{rootMargin:"-20% 0px -70% 0px"});
+io.observe(document.getElementById("accueil"));secs.forEach(function(x){io.observe(x);});}
+})();
+</script>
+</body>
+</html>

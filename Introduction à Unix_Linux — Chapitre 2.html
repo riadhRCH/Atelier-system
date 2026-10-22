@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Introduction à Unix/Linux — Chapitre 2</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f5f7fa;--card:#fff;--ink:#1c2836;--mut:#5b6b7c;--line:#dde4ec;--ac:#0e6b8c;--ac2:#e2eef3;--warn:#fff6e0;--warnl:#e6b422;--ok:#e8f5ee;--okl:#2e8b57;--term:#14202b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:16px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
+code,pre,kbd{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace}
+.wrap{display:grid;grid-template-columns:250px minmax(0,1fr);max-width:1180px;margin:0 auto}
+nav{position:sticky;top:0;align-self:start;height:100vh;overflow:auto;padding:28px 20px;border-right:1px solid var(--line);background:var(--card)}
+nav b{display:block;font-size:15px;margin-bottom:14px;color:var(--ac)}
+nav a{display:block;padding:6px 10px;margin:2px 0;color:var(--ink);text-decoration:none;border-radius:6px;font-size:14px}
+nav a:hover,nav a:focus-visible{background:var(--ac2);outline:none}
+main{padding:36px 40px 80px;min-width:0}
+header.hero{border-bottom:3px solid var(--ac);padding-bottom:22px;margin-bottom:30px}
+.hero h1{font-size:2.2rem;line-height:1.2;margin:0 0 8px}
+.hero p{color:var(--mut);margin:0;max-width:62ch}
+section{margin-bottom:56px}
+h2{font-size:1.6rem;margin:0 0 16px;padding-top:8px;border-top:1px solid var(--line)}
+h3{font-size:1.15rem;margin:26px 0 8px;color:var(--ac)}
+p,li{max-width:76ch}
+.obj{background:var(--ac2);border-left:4px solid var(--ac);padding:12px 18px;border-radius:0 8px 8px 0;margin:14px 0}
+.note{background:var(--warn);border-left:4px solid var(--warnl);padding:10px 16px;border-radius:0 8px 8px 0;margin:14px 0}
+figure{margin:18px 0;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+figure svg{width:100%;height:auto;display:block}
+figcaption{font-size:13px;color:var(--mut);margin-top:8px;text-align:center}
+pre{background:var(--term);color:#dfe9f2;padding:14px 16px;border-radius:8px;overflow-x:auto;font-size:14px;line-height:1.5;margin:10px 0}
+pre .p{color:#7fd1a0}pre .c{color:#8aa0b3}pre .o{color:#f0c674}
+:not(pre)>code{background:#e9eff5;padding:1px 6px;border-radius:4px;font-size:.9em}
+table{border-collapse:collapse;width:100%;background:var(--card);font-size:14.5px;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:8px 12px;text-align:left;vertical-align:top}
+th{background:var(--ac2)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.card h4{margin:0 0 6px;font-size:1.02rem}
+.card ol,.card ul{padding-left:20px;margin:6px 0}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:99px;background:var(--ac2);color:var(--ac);margin-bottom:6px}
+.ex{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 20px;margin:18px 0}
+.ex h3{margin-top:0}
+details{margin:8px 0;border-radius:8px;border:1px solid var(--line);background:#fbfcfd}
+summary{cursor:pointer;padding:8px 14px;font-weight:500}
+summary:focus-visible{outline:2px solid var(--ac)}
+details>div{padding:0 14px 10px}
+details.hint{border-color:var(--warnl)}details.hint summary{background:var(--warn)}
+details.res{border-color:var(--okl)}details.res summary{background:var(--ok)}
+footer{color:var(--mut);font-size:13px;border-top:1px solid var(--line);padding-top:14px}
+@media(max-width:820px){.wrap{display:block}nav{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line)}main{padding:24px 16px 60px}.hero h1{font-size:1.7rem}}
+.cover{min-height:88vh;display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center;background:linear-gradient(135deg,#fff 55%,#e2eef3);border:1px solid var(--line);border-radius:14px;padding:44px;margin-bottom:48px}
+.cover h1{font-size:2.7rem;line-height:1.15;margin:6px 0 14px}.cover .ch{color:var(--ac);font-weight:600;font-size:1.15rem}
+.btn{display:inline-block;background:var(--ac);color:#fff;padding:11px 22px;border-radius:8px;text-decoration:none;font-weight:500;margin-top:8px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;align-items:center}
+@media(max-width:820px){.cover{grid-template-columns:1fr;padding:24px;min-height:auto}.cover h1{font-size:2rem}}
+.lvl{background:var(--ac);color:#fff;padding:8px 14px;border-radius:8px;margin:34px 0 4px}.lvd{color:var(--mut);margin:4px 0 8px}
+h1,h2,.cover h1{font-family:"Source Serif 4",Georgia,"Times New Roman",serif}
+h2{border-top:0;border-left:6px solid var(--ac);background:var(--card);padding:10px 16px;border-radius:0 8px 8px 0;box-shadow:0 1px 0 var(--line)}
+.brand{border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:14px}
+.brand span{display:block;font-size:12.5px;color:var(--mut)}.brand b{margin:2px 0 10px}
+.pg{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin-bottom:4px}.pg i{display:block;height:100%;width:0;background:var(--ac);transition:width .2s}
+nav a.on{background:var(--ac2);color:var(--ac);font-weight:600;box-shadow:inset 3px 0 var(--ac)}
+#bar{position:fixed;top:0;left:0;height:4px;width:0;background:var(--ac);z-index:50;padding-top:env(safe-area-inset-top,0px)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}.chips span{background:var(--card);border:1px solid var(--line);border-radius:99px;padding:3px 12px;font-size:13.5px;color:var(--mut)}
+.goals{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--ac);border-radius:8px;padding:12px 18px;margin:14px 0 18px;font-size:15px}.goals ul{margin:6px 0 0;padding-left:20px}
+.pn{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:28px;padding-top:14px;border-top:1px dashed var(--line)}
+.pn a{color:var(--ac);text-decoration:none;font-weight:500;padding:8px 14px;border:1px solid var(--line);background:var(--card);border-radius:8px}.pn a:hover,.pn a:focus-visible{background:var(--ac2);outline:none}
+details{overflow:hidden;border-radius:10px;border-width:1.5px;border-style:solid}
+details>summary{border-radius:0;list-style-position:inside;padding:9px 16px}
+details[open]>summary{border-bottom:1px solid var(--line)}
+details>div{padding:10px 16px 12px}details>div>pre{margin:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav aria-label="Sommaire">
+<div class="brand"><span>Systèmes d'exploitation · 1re année</span><b>Chapitre 2 — Unix / Linux</b><div class="pg"><i id="pgf"></i></div><span id="pgt">0 % parcouru</span></div>
+<a href="#accueil">Accueil</a>
+<a href="#histoire">1. Historique</a>
+<a href="#unix-linux">&nbsp;&nbsp;Unix ou Linux ?</a>
+<a href="#archi">2. Architecture</a>
+<a href="#distros">3. Distributions</a>
+<a href="#install">4. Installation</a>
+<a href="#shell">5. Le Shell</a>
+<a href="#aide">6. Aide et man</a>
+<a href="#regex">7. Méta-caractères</a>
+<a href="#tp">8. Exercices pratiques</a>
+<a href="#final">&nbsp;&nbsp;Exercice final noté</a>
+</nav>
+<main>
+<header class="cover" id="accueil">
+<div>
+<div class="ch">Chapitre 2</div>
+<h1>Introduction à Unix / Linux</h1>
+<p>Un cours simple pour débuter : d'où vient Linux, comment il fonctionne, comment l'installer et quelles commandes taper en premier.</p>
+<div class="chips"><span>Niveau : débutant</span><span>Durée : environ 3 h</span><span>8 parties, 14 exercices et 1 projet noté</span></div>
+<div class="goals"><b>À la fin du chapitre, vous saurez :</b><ul><li>situer Unix, GNU et Linux et décrire l'architecture d'un système</li><li>choisir une distribution et installer Ubuntu (WSL, machine virtuelle…)</li><li>écrire une commande avec options et arguments, et utiliser <code>man</code></li><li>utiliser les jokers <code>*</code>, <code>?</code> et <code>[ ]</code> pour gérer des fichiers</li></ul></div>
+<a class="btn" href="#histoire">Commencer le cours</a>
+</div>
+<div><svg viewBox="0 0 220 260" role="img" aria-label="Manchot Tux, mascotte de Linux" style="max-width:260px;margin:auto">
+<ellipse cx="110" cy="245" rx="80" ry="10" fill="#dde4ec"/>
+<ellipse cx="110" cy="140" rx="70" ry="95" fill="#1c2836"/>
+<ellipse cx="110" cy="160" rx="46" ry="70" fill="#fff"/>
+<circle cx="110" cy="62" r="42" fill="#1c2836"/>
+<ellipse cx="90" cy="55" rx="11" ry="14" fill="#fff"/><ellipse cx="130" cy="55" rx="11" ry="14" fill="#fff"/>
+<circle cx="92" cy="58" r="5" fill="#1c2836"/><circle cx="128" cy="58" r="5" fill="#1c2836"/>
+<path d="M92 78 Q110 66 128 78 Q110 100 92 78Z" fill="#f0a020"/>
+<ellipse cx="75" cy="238" rx="30" ry="12" fill="#f0a020"/><ellipse cx="145" cy="238" rx="30" ry="12" fill="#f0a020"/>
+<path d="M45 110 Q20 160 42 200 Q55 150 60 120Z" fill="#1c2836"/><path d="M175 110 Q200 160 178 200 Q165 150 160 120Z" fill="#1c2836"/>
+</svg></div>
+</header>
+
+<section id="histoire">
+<h2>1. Fondamentaux : historique d'Unix et de Linux</h2>
+<div class="obj"><b>Objectif :</b> situer Unix, GNU et Linux dans le temps et comprendre leurs liens.</div>
+<figure>
+<svg viewBox="0 0 900 250" role="img" aria-label="Frise chronologique d'Unix à Ubuntu">
+<line x1="40" y1="120" x2="860" y2="120" stroke="#0e6b8c" stroke-width="4"/>
+<g font-family="IBM Plex Sans,sans-serif" font-size="13" fill="#1c2836" text-anchor="middle">
+<circle cx="70" cy="120" r="8" fill="#0e6b8c"/><text x="70" y="90" font-weight="600">1969</text><text x="70" y="150">Unix</text><text x="70" y="168" fill="#5b6b7c">Bell Labs</text>
+<circle cx="190" cy="120" r="8" fill="#0e6b8c"/><text x="190" y="90" font-weight="600">1973</text><text x="190" y="150">Unix en C</text><text x="190" y="168" fill="#5b6b7c">portable</text>
+<circle cx="310" cy="120" r="8" fill="#0e6b8c"/><text x="310" y="90" font-weight="600">1983</text><text x="310" y="150">Projet GNU</text><text x="310" y="168" fill="#5b6b7c">R. Stallman</text>
+<circle cx="430" cy="120" r="8" fill="#e2792b"/><text x="430" y="90" font-weight="600">1991</text><text x="430" y="150">Noyau Linux</text><text x="430" y="168" fill="#5b6b7c">L. Torvalds</text>
+<circle cx="550" cy="120" r="8" fill="#0e6b8c"/><text x="550" y="90" font-weight="600">1993</text><text x="550" y="150">Debian</text><text x="550" y="168" fill="#5b6b7c">I. Murdock</text>
+<circle cx="670" cy="120" r="8" fill="#0e6b8c"/><text x="670" y="90" font-weight="600">1994</text><text x="670" y="150">Red Hat</text><text x="670" y="168" fill="#5b6b7c">premières versions</text>
+<circle cx="790" cy="120" r="8" fill="#0e6b8c"/><text x="790" y="90" font-weight="600">2004</text><text x="790" y="150">Ubuntu</text><text x="790" y="168" fill="#5b6b7c">Canonical</text>
+</g>
+</svg>
+<figcaption>Les grandes dates d'Unix/Linux</figcaption>
+</figure>
+<p><b>Unix</b> naît en 1969 aux laboratoires Bell (AT&amp;T) sous l'impulsion de Ken Thompson et Dennis Ritchie. Réécrit en langage C en 1973, il devient portable sur de nombreuses machines. Sa philosophie : de petits programmes qui font une seule chose bien, et qui se combinent entre eux.</p>
+<p>En 1983, Richard Stallman lance le projet <b>GNU</b> pour créer un système libre. Il produit presque tous les outils (compilateur gcc, shell bash, commandes de base), mais il lui manque un noyau. En 1991, l'étudiant finlandais <b>Linus Torvalds</b> publie le noyau <b>Linux</b>. L'association du noyau Linux et des outils GNU forme ce qu'on appelle un système GNU/Linux.</p>
+<div class="note"><b>À retenir :</b> « Linux » désigne strictement le <i>noyau</i>. Le système complet est fourni par une <i>distribution</i>. Linux est sous licence libre (GPL) : on peut l'utiliser, l'étudier, le modifier et le redistribuer.</div>
+<h3 id="unix-linux">Quelle différence entre Unix et Linux ?</h3>
+<div class="obj"><b>En bref :</b> Unix est le système d'origine. Linux est un système <i>inspiré</i> d'Unix, écrit à part et gratuit. Ils se ressemblent beaucoup, comme deux voitures de marques différentes qui ont le même volant et les mêmes pédales.</div>
+<table>
+<tr><th></th><th>Unix</th><th>Linux</th></tr>
+<tr><td>Créé par</td><td>Bell Labs (1969)</td><td>Linus Torvalds et la communauté (1991)</td></tr>
+<tr><td>Code source</td><td>Propriétaire à l'origine</td><td>Libre et ouvert (GPL)</td></tr>
+<tr><td>Prix</td><td>Souvent payant</td><td>Gratuit</td></tr>
+<tr><td>Exemples</td><td>Solaris, AIX, HP-UX, macOS</td><td>Ubuntu, Debian, Fedora</td></tr>
+<tr><td>Commandes</td><td colspan="2">Presque identiques : <code>ls</code>, <code>cd</code>, <code>cp</code>… fonctionnent des deux côtés</td></tr>
+</table>
+<p>Linux n'utilise aucune ligne de code d'Unix : il en reprend seulement les idées et les règles de fonctionnement. On dit que c'est un système « de type Unix » (<i>Unix-like</i>).</p>
+<h3>Linus Torvalds, le créateur du noyau</h3>
+<div class="two">
+<figure><img src="data:image/jpeg;base64,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" alt="Portrait de Linus Torvalds souriant, lors d'une conférence LinuxCon Europe" style="width:100%;max-width:250px;height:auto;display:block;margin:auto;border-radius:8px"><figcaption>Linus Torvalds à LinuxCon Europe. Auteur et licence : <a href="https://commons.wikimedia.org/wiki/File:LinuxCon_Europe_Linus_Torvalds_03_(cropped).jpg?uselang=fr" target="_blank" rel="noopener">page du fichier sur Wikimedia Commons</a></figcaption></figure>
+<div><p><b>Linus Torvalds</b> est né en 1969 à Helsinki (Finlande). En 1991, à 21 ans et encore étudiant, il écrit un petit noyau « pour le plaisir » et le partage sur Internet. Des milliers de développeurs l'ont amélioré depuis. Il a aussi créé <b>Git</b> en 2005, l'outil de gestion de versions le plus utilisé.</p><p>La mascotte de Linux est le manchot <b>Tux</b> (page de garde).</p></div>
+</div>
+</section>
+
+<section id="archi">
+<h2>2. Architecture d'un système Unix/Linux</h2>
+<figure>
+<svg viewBox="0 0 700 330" role="img" aria-label="Architecture en couches : matériel, noyau, shell, applications">
+<g font-family="IBM Plex Sans,sans-serif" font-size="15" text-anchor="middle">
+<rect x="20" y="20" width="660" height="60" rx="8" fill="#e2eef3" stroke="#0e6b8c"/><text x="350" y="46" font-weight="600" fill="#1c2836">Utilisateur et applications</text><text x="350" y="66" fill="#5b6b7c" font-size="13">navigateur, éditeur, scripts, compilateur…</text>
+<rect x="20" y="95" width="660" height="55" rx="8" fill="#fff" stroke="#0e6b8c"/><text x="350" y="120" font-weight="600" fill="#1c2836">Shell (interpréteur de commandes)</text><text x="350" y="139" fill="#5b6b7c" font-size="13">bash, zsh, sh — traduit vos commandes pour le noyau</text>
+<rect x="20" y="165" width="660" height="70" rx="8" fill="#0e6b8c"/><text x="350" y="192" font-weight="600" fill="#fff">Noyau (kernel)</text><text x="350" y="214" fill="#d5e8ef" font-size="13">processus, mémoire, fichiers, pilotes, réseau</text>
+<rect x="20" y="250" width="660" height="60" rx="8" fill="#eef1f5" stroke="#8798a9"/><text x="350" y="276" font-weight="600" fill="#1c2836">Matériel</text><text x="350" y="296" fill="#5b6b7c" font-size="13">processeur, RAM, disque, réseau</text>
+</g>
+</svg>
+<figcaption>Chaque couche ne dialogue qu'avec la couche voisine</figcaption>
+</figure>
+<div class="obj"><b>Analogie du restaurant :</b> vous (l'utilisateur) commandez au serveur (le <b>shell</b>), qui transmet à la cuisine (le <b>noyau</b>). La cuisine utilise les équipements (le <b>matériel</b>) et prépare le plat. Le <b>système de fichiers</b> est le garde-manger bien rangé.</div>
+<div class="grid">
+<div class="card"><h4>Le noyau (kernel)</h4><p>Cœur du système. Il gère le processeur, la mémoire, les périphériques et les fichiers, et sert d'intermédiaire entre les programmes et le matériel.</p></div>
+<div class="card"><h4>Le shell</h4><p>Programme qui lit vos commandes, les interprète et demande au noyau de les exécuter. C'est votre interface en ligne de commande.</p></div>
+<div class="card"><h4>Le système de fichiers</h4><p>Organisation arborescente unique dont le sommet est la racine <code>/</code>. « Tout est fichier » : documents, périphériques, processus.</p></div>
+</div>
+<h3>L'arborescence standard</h3>
+<figure>
+<svg viewBox="0 0 700 260" role="img" aria-label="Arborescence Linux">
+<g font-family="IBM Plex Mono,monospace" font-size="14" text-anchor="middle">
+<rect x="315" y="10" width="70" height="32" rx="6" fill="#0e6b8c"/><text x="350" y="31" fill="#fff">/</text>
+<g stroke="#8798a9"><line x1="350" y1="42" x2="350" y2="60"/><line x1="70" y1="60" x2="630" y2="60"/>
+<line x1="70" y1="60" x2="70" y2="80"/><line x1="185" y1="60" x2="185" y2="80"/><line x1="300" y1="60" x2="300" y2="80"/><line x1="415" y1="60" x2="415" y2="80"/><line x1="520" y1="60" x2="520" y2="80"/><line x1="630" y1="60" x2="630" y2="80"/></g>
+<g fill="#e2eef3" stroke="#0e6b8c"><rect x="30" y="80" width="80" height="30" rx="6"/><rect x="145" y="80" width="80" height="30" rx="6"/><rect x="260" y="80" width="80" height="30" rx="6"/><rect x="375" y="80" width="80" height="30" rx="6"/><rect x="480" y="80" width="80" height="30" rx="6"/><rect x="590" y="80" width="80" height="30" rx="6"/></g>
+<g fill="#1c2836"><text x="70" y="100">home</text><text x="185" y="100">etc</text><text x="300" y="100">bin</text><text x="415" y="100">usr</text><text x="520" y="100">var</text><text x="630" y="100">tmp</text></g>
+<g font-family="IBM Plex Sans,sans-serif" font-size="12.5" fill="#5b6b7c"><text x="70" y="135">dossiers des</text><text x="70" y="151">utilisateurs</text><text x="185" y="135">configuration</text><text x="185" y="151">du système</text><text x="300" y="135">commandes</text><text x="300" y="151">essentielles</text><text x="415" y="135">programmes</text><text x="415" y="151">et bibliothèques</text><text x="520" y="135">journaux, données</text><text x="520" y="151">variables</text><text x="630" y="135">fichiers</text><text x="630" y="151">temporaires</text></g>
+</g>
+</svg>
+<figcaption>Quelques répertoires clés (il existe aussi <code>/root</code>, <code>/dev</code>, <code>/proc</code>, <code>/boot</code>)</figcaption>
+</figure>
+<p>Deux notions de chemin : <b>absolu</b> (commence par <code>/</code>, ex. <code>/home/alice/tp</code>) et <b>relatif</b> (depuis le répertoire courant, ex. <code>tp/docs</code>). Raccourcis : <code>.</code> (ici), <code>..</code> (parent), <code>~</code> (votre dossier personnel).</p>
+</section>
+
+<section id="distros">
+<h2>3. Les distributions Linux</h2>
+<p>Une distribution assemble le noyau, les outils GNU, un gestionnaire de paquets et souvent un environnement graphique. Les principales se regroupent en familles selon leur base.</p>
+<figure>
+<svg viewBox="0 0 700 250" role="img" aria-label="Familles Debian et Red Hat">
+<g font-family="IBM Plex Sans,sans-serif" font-size="14" text-anchor="middle">
+<rect x="40" y="15" width="270" height="44" rx="8" fill="#0e6b8c"/><text x="175" y="43" fill="#fff" font-weight="600">Famille Debian (.deb, apt)</text>
+<rect x="390" y="15" width="270" height="44" rx="8" fill="#a3322f"/><text x="525" y="43" fill="#fff" font-weight="600">Famille Red Hat (.rpm, dnf)</text>
+<g stroke="#8798a9"><line x1="175" y1="59" x2="175" y2="90"/><line x1="525" y1="59" x2="525" y2="90"/><line x1="175" y1="90" x2="95" y2="105"/><line x1="175" y1="90" x2="255" y2="105"/><line x1="525" y1="90" x2="445" y2="105"/><line x1="525" y1="90" x2="605" y2="105"/></g>
+<g fill="#fff" stroke="#8798a9"><rect x="35" y="105" width="120" height="40" rx="8"/><rect x="195" y="105" width="120" height="40" rx="8"/><rect x="385" y="105" width="120" height="40" rx="8"/><rect x="545" y="105" width="120" height="40" rx="8"/></g>
+<g fill="#1c2836"><text x="95" y="130">Debian</text><text x="255" y="130">Ubuntu</text><text x="445" y="130">Fedora</text><text x="605" y="130">RHEL</text></g>
+<g stroke="#8798a9"><line x1="255" y1="145" x2="255" y2="170"/><line x1="605" y1="145" x2="605" y2="170"/></g>
+<g fill="#e2eef3" stroke="#0e6b8c"><rect x="195" y="170" width="120" height="40" rx="8"/></g><text x="255" y="195" fill="#1c2836">Mint, Kali…</text>
+<g fill="#f7e6e5" stroke="#a3322f"><rect x="545" y="170" width="120" height="40" rx="8"/></g><text x="605" y="195" fill="#1c2836">Rocky, Alma…</text>
+</g>
+</svg>
+<figcaption>Deux grandes familles et quelques dérivées</figcaption>
+</figure>
+<table>
+<tr><th></th><th>Debian / Ubuntu</th><th>Red Hat / CentOS</th></tr>
+<tr><td>Paquets</td><td><code>.deb</code></td><td><code>.rpm</code></td></tr>
+<tr><td>Installer un logiciel</td><td><code>sudo apt install nom</code></td><td><code>sudo dnf install nom</code></td></tr>
+<tr><td>Mettre à jour</td><td><code>sudo apt update &amp;&amp; sudo apt upgrade</code></td><td><code>sudo dnf upgrade</code></td></tr>
+<tr><td>Usage typique</td><td>Poste de travail, apprentissage, serveurs web</td><td>Serveurs d'entreprise, environnements certifiés</td></tr>
+<tr><td>Remarque</td><td>Ubuntu LTS : support de 5 ans, idéal pour débuter</td><td>CentOS classique arrêté en 2021 ; remplacé par CentOS Stream, Rocky Linux ou AlmaLinux</td></tr>
+</table>
+<figure><svg viewBox="0 0 700 300" role="img" aria-label="Illustration du bureau Ubuntu">
+<defs><linearGradient id="g" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#5e2750"/><stop offset="1" stop-color="#e95420"/></linearGradient></defs>
+<rect width="700" height="300" rx="10" fill="url(#g)"/>
+<rect width="700" height="24" fill="#2b1a26" opacity=".85"/><text x="350" y="17" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="12" fill="#fff">28 sept. 10:30</text>
+<rect y="24" width="56" height="276" fill="#2b1a26" opacity=".7"/>
+<g fill="#fff" opacity=".85"><rect x="14" y="44" width="28" height="28" rx="7"/><rect x="14" y="88" width="28" height="28" rx="7"/><rect x="14" y="132" width="28" height="28" rx="7"/><rect x="14" y="176" width="28" height="28" rx="7"/></g>
+<rect x="110" y="60" width="420" height="200" rx="8" fill="#14202b"/><rect x="110" y="60" width="420" height="24" rx="8" fill="#3a2a35"/>
+<circle cx="126" cy="72" r="5" fill="#e95420"/><circle cx="142" cy="72" r="5" fill="#f0c674"/><circle cx="158" cy="72" r="5" fill="#7fd1a0"/>
+<g font-family="IBM Plex Mono,monospace" font-size="14"><text x="126" y="112" fill="#7fd1a0">alice@ubuntu:~$ <tspan fill="#dfe9f2">lsb_release -d</tspan></text><text x="126" y="136" fill="#dfe9f2">Description: Ubuntu 24.04 LTS</text><text x="126" y="166" fill="#7fd1a0">alice@ubuntu:~$ <tspan fill="#dfe9f2">pwd</tspan></text><text x="126" y="190" fill="#dfe9f2">/home/alice</text></g>
+<g transform="translate(610,220)"><circle r="46" fill="#fff"/><circle r="38" fill="#e95420"/><circle r="22" fill="none" stroke="#fff" stroke-width="7"/><circle cx="-22" cy="0" r="8" fill="#fff" stroke="#e95420" stroke-width="3"/><circle cx="11" cy="-19" r="8" fill="#fff" stroke="#e95420" stroke-width="3"/><circle cx="11" cy="19" r="8" fill="#fff" stroke="#e95420" stroke-width="3"/></g>
+</svg><figcaption>Ubuntu : un bureau graphique, un terminal, et son logo en cercle (illustration simplifiée)</figcaption></figure>
+<div class="note"><b>Pour ce cours :</b> nous utilisons <b>Ubuntu LTS</b> (24.04 ou plus récente). Toutes les commandes vues fonctionnent sur les autres distributions.</div>
+</section>
+
+<section id="install">
+<h2>4. Installer un environnement Linux de base</h2>
+<div class="obj"><b>Quel choix pour vous ?</b> Sous Windows, prenez <b>WSL</b> (2 minutes). Sur un Mac ou pour ne rien risquer, prenez une <b>machine virtuelle</b>. Les autres méthodes viennent ensuite.</div>
+<p>Il existe plusieurs façons d'obtenir Ubuntu. Choisissez selon votre situation. Téléchargement officiel de l'image ISO : <code>ubuntu.com/download</code>.</p>
+<div class="grid">
+<div class="card"><span class="tag">Windows — le plus simple</span><h4>A. WSL (Windows Subsystem for Linux)</h4>
+<p>Linux directement dans Windows 10 (2004+) ou 11, sans machine virtuelle à gérer.</p>
+<ol><li>Ouvrir <b>PowerShell en administrateur</b>.</li><li>Lancer la commande ci-dessous.</li><li>Redémarrer si demandé.</li><li>Ubuntu s'ouvre : choisir un nom d'utilisateur et un mot de passe.</li></ol>
+<pre><span class="p">PS&gt;</span> wsl --install
+<span class="c"># une autre version :</span>
+<span class="p">PS&gt;</span> wsl --list --online
+<span class="p">PS&gt;</span> wsl --install -d Ubuntu-24.04</pre>
+<p>Lancer ensuite Ubuntu depuis le menu Démarrer ou avec <code>wsl</code>. Méthode manuelle si besoin : activer les fonctionnalités « Sous-système Windows pour Linux » et « Plateforme de machine virtuelle », puis <code>wsl --set-default-version 2</code>. Ubuntu est aussi disponible dans le Microsoft Store.</p></div>
+<div class="card"><span class="tag">Tous systèmes — sans risque</span><h4>B. Machine virtuelle</h4>
+<ol><li>Installer VirtualBox, VMware Workstation Player ou Hyper-V.</li><li>Créer une VM : 2 CPU, 4 Go de RAM, 25 Go de disque minimum.</li><li>Monter l'ISO d'Ubuntu comme lecteur optique.</li><li>Démarrer et suivre l'assistant d'installation.</li></ol>
+<p>Sur Mac (Apple Silicon) : UTM ou Parallels avec l'ISO ARM.</p></div>
+<div class="card"><span class="tag">Test rapide</span><h4>C. Clé USB « Live »</h4>
+<ol><li>Créer la clé avec Rufus (Windows), balenaEtcher ou Ventoy (8 Go min.).</li><li>Redémarrer et ouvrir le menu de démarrage (F12, F2, Échap… selon la machine).</li><li>Choisir « Try Ubuntu » : rien n'est installé, tout disparaît à l'extinction.</li></ol></div>
+<div class="card"><span class="tag">Installation définitive</span><h4>D. Installation sur disque (seul ou double démarrage)</h4>
+<ol><li><b>Sauvegarder vos données.</b></li><li>Sous Windows : réduire une partition depuis « Gestion des disques » (≈ 40 Go), désactiver le démarrage rapide et BitLocker si actif.</li><li>Démarrer sur la clé USB, choisir « Install Ubuntu ».</li><li>Choisir « Installer à côté de Windows » (dual boot) ou « Effacer le disque ».</li></ol>
+<p>Au démarrage, le menu GRUB permet de choisir Windows ou Ubuntu.</p></div>
+<div class="card"><span class="tag">Développeurs</span><h4>E. Multipass ou Docker</h4>
+<p>Ubuntu léger en une commande.</p>
+<pre><span class="p">$</span> multipass launch 24.04 --name tp
+<span class="p">$</span> multipass shell tp
+<span class="c"># ou avec Docker :</span>
+<span class="p">$</span> docker run -it ubuntu:24.04 bash</pre></div>
+<div class="card"><span class="tag">Sans installation</span><h4>F. Cloud et terminal en ligne</h4>
+<p>Serveur Ubuntu chez un fournisseur cloud (Azure, AWS, DigitalOcean…) accessible par SSH, ou terminaux en ligne pour s'exercer sans rien installer.</p>
+<pre><span class="p">$</span> ssh utilisateur@adresse-du-serveur</pre></div>
+</div>
+<h3>Vérifier son installation</h3>
+<pre><span class="p">$</span> lsb_release -a
+<span class="o">Distributor ID:</span> Ubuntu
+<span class="o">Release:</span>        24.04
+<span class="p">$</span> uname -r
+<span class="c"># affiche la version du noyau</span>
+<span class="p">$</span> sudo apt update &amp;&amp; sudo apt upgrade -y</pre>
+<div class="note"><b>Conseil :</b> pour débuter, <b>WSL</b> (sous Windows) ou une <b>machine virtuelle</b> suffisent et sont sans risque pour vos données.</div>
+</section>
+
+<section id="shell">
+<h2>5. L'interpréteur Shell</h2>
+<div class="obj"><b>En bref :</b> le shell est une fenêtre où l'on donne des ordres à l'ordinateur en tapant du texte. On écrit une commande, on appuie sur Entrée, l'ordinateur répond.</div>
+<p>Le shell affiche une <b>invite</b> (prompt), lit la ligne saisie, l'analyse, lance le programme demandé et affiche le résultat. Le plus courant est <b>bash</b>.</p>
+<pre><span class="p">alice@pc:~$</span> ls -l /etc
+<span class="c"># alice = utilisateur, pc = machine, ~ = dossier courant, $ = utilisateur normal (# = root)</span></pre>
+<figure>
+<svg viewBox="0 0 700 150" role="img" aria-label="Syntaxe d'une commande">
+<g font-family="IBM Plex Mono,monospace" font-size="24" text-anchor="middle">
+<rect x="60" y="30" width="110" height="48" rx="8" fill="#0e6b8c"/><text x="115" y="62" fill="#fff">cp</text>
+<rect x="200" y="30" width="110" height="48" rx="8" fill="#e2792b"/><text x="255" y="62" fill="#fff">-v</text>
+<rect x="340" y="30" width="150" height="48" rx="8" fill="#2e8b57"/><text x="415" y="62" fill="#fff">a.txt</text>
+<rect x="520" y="30" width="130" height="48" rx="8" fill="#2e8b57"/><text x="585" y="62" fill="#fff">tp/</text>
+</g>
+<g font-family="IBM Plex Sans,sans-serif" font-size="14" text-anchor="middle" fill="#1c2836">
+<text x="115" y="105">commande</text><text x="115" y="123" fill="#5b6b7c" font-size="12">le programme</text>
+<text x="255" y="105">option</text><text x="255" y="123" fill="#5b6b7c" font-size="12">modifie le comportement</text>
+<text x="500" y="105">arguments</text><text x="500" y="123" fill="#5b6b7c" font-size="12">source puis destination</text>
+</g>
+</svg>
+<figcaption>Syntaxe générale : <code>commande [options] [arguments]</code></figcaption>
+</figure>
+<ul>
+<li><b>Options courtes</b> : un tiret, une lettre (<code>-l</code>), combinables : <code>-lah</code>.</li>
+<li><b>Options longues</b> : deux tirets (<code>--help</code>, <code>--all</code>).</li>
+<li><b>Arguments</b> : fichiers, répertoires ou textes sur lesquels agit la commande.</li>
+<li>Linux est <b>sensible à la casse</b> : <code>Doc</code> et <code>doc</code> sont différents. Les espaces séparent les mots.</li>
+</ul>
+<h3>Commandes de base</h3>
+<table>
+<tr><th>Commande</th><th>Rôle</th><th>Exemple</th></tr>
+<tr><td><code>pwd</code></td><td>Afficher le répertoire courant</td><td><code>pwd</code></td></tr>
+<tr><td><code>ls</code></td><td>Lister (<code>-l</code> détaillé, <code>-a</code> fichiers cachés, <code>-h</code> tailles lisibles)</td><td><code>ls -lah</code></td></tr>
+<tr><td><code>cd</code></td><td>Changer de répertoire</td><td><code>cd /etc</code>, <code>cd ..</code>, <code>cd</code></td></tr>
+<tr><td><code>mkdir</code></td><td>Créer un dossier (<code>-p</code> : avec parents)</td><td><code>mkdir -p a/b</code></td></tr>
+<tr><td><code>touch</code></td><td>Créer un fichier vide</td><td><code>touch f.txt</code></td></tr>
+<tr><td><code>cp</code> / <code>mv</code></td><td>Copier / déplacer ou renommer</td><td><code>cp a b</code>, <code>mv a c</code></td></tr>
+<tr><td><code>rm</code></td><td>Supprimer (<code>-r</code> dossier). <b>Sans corbeille !</b></td><td><code>rm f.txt</code></td></tr>
+<tr><td><code>cat</code>, <code>head</code>, <code>less</code></td><td>Afficher un fichier</td><td><code>head -n 3 f.txt</code></td></tr>
+<tr><td><code>echo</code></td><td>Afficher du texte (avec <code>&gt;</code> : écrire dans un fichier)</td><td><code>echo salut &gt; f.txt</code></td></tr>
+<tr><td><code>clear</code>, <code>history</code></td><td>Effacer l'écran / historique des commandes</td><td></td></tr>
+</table>
+<div class="note"><b>Astuces :</b> <kbd>Tab</kbd> complète les noms, <kbd>↑</kbd> rappelle la commande précédente, <kbd>Ctrl</kbd>+<kbd>C</kbd> interrompt un programme.</div>
+</section>
+
+<section id="aide">
+<h2>6. Aide et documentation</h2>
+<p>Un utilisateur Linux ne mémorise pas tout : il sait chercher. Trois réflexes :</p>
+<pre><span class="p">$</span> man ls              <span class="c"># manuel complet de ls</span>
+<span class="p">$</span> ls --help | less    <span class="c"># aide rapide de la commande</span>
+<span class="p">$</span> whatis ls           <span class="c"># description en une ligne</span>
+<span class="p">$</span> apropos copy        <span class="c"># chercher un mot dans toutes les descriptions</span>
+<span class="p">$</span> type cd             <span class="c"># cd est une commande interne du shell (utiliser help cd)</span></pre>
+<h3>Lire une page man</h3>
+<table>
+<tr><th>Section</th><th>Contenu</th></tr>
+<tr><td>NAME</td><td>Nom et description courte</td></tr>
+<tr><td>SYNOPSIS</td><td>Syntaxe. <code>[ ]</code> = facultatif, <code>...</code> = répétable, <code>|</code> = ou</td></tr>
+<tr><td>DESCRIPTION</td><td>Explication détaillée et liste des options</td></tr>
+<tr><td>EXAMPLES / SEE ALSO</td><td>Exemples et commandes liées</td></tr>
+</table>
+<p><b>Navigation dans man</b> (fonctionne aussi avec <code>less</code>) : <kbd>Espace</kbd> page suivante, <kbd>b</kbd> page précédente, <kbd>/mot</kbd> rechercher (puis <kbd>n</kbd> suivant), <kbd>q</kbd> quitter.</p>
+<p>Les pages sont classées en sections numérotées : 1 commandes, 5 formats de fichiers, 8 administration. Exemple : <code>man 5 passwd</code> (fichier) ≠ <code>man 1 passwd</code> (commande). Autres sources : <code>info</code>, <code>/usr/share/doc</code>, et la documentation en ligne (ubuntu.com, wiki.debian.org, manpages.debian.org).</p>
+</section>
+
+<section id="regex">
+<h2>7. Méta-caractères du Shell (jokers)</h2>
+<div class="obj"><b>En bref :</b> les jokers sont des « cartes joker » : <code>*</code> remplace n'importe quoi, <code>?</code> remplace une seule lettre, <code>[ab]</code> remplace une lettre choisie dans une liste.</div>
+<p>Le shell remplace les motifs par la liste des fichiers correspondants <b>avant</b> de lancer la commande. On parle de <i>globbing</i>. Ne pas confondre avec les expressions régulières de <code>grep</code>.</p>
+<table>
+<tr><th>Motif</th><th>Signification</th><th>Exemple</th></tr>
+<tr><td><code>*</code></td><td>0 ou plusieurs caractères quelconques</td><td><code>*.txt</code> : tous les fichiers .txt</td></tr>
+<tr><td><code>?</code></td><td>exactement 1 caractère</td><td><code>f?.c</code> : fa.c, f1.c (pas f10.c)</td></tr>
+<tr><td><code>[abc]</code></td><td>1 caractère parmi a, b ou c</td><td><code>photo_[ab].jpg</code></td></tr>
+<tr><td><code>[a-z]</code>, <code>[0-9]</code></td><td>1 caractère dans un intervalle</td><td><code>doc[0-9].pdf</code></td></tr>
+<tr><td><code>[!abc]</code></td><td>1 caractère <b>sauf</b> a, b, c</td><td><code>[!.]*</code></td></tr>
+</table>
+<div class="note">Les fichiers cachés (débutant par <code>.</code>) ne sont pas captés par <code>*</code>. Pour empêcher l'interprétation, mettre entre guillemets : <code>echo "*"</code> affiche un astérisque.</div>
+</section>
+
+<section id="tp">
+<h2>8. Exercices pratiques au terminal</h2>
+<div class="obj">Ouvrez un terminal Ubuntu (WSL, VM ou autre). Les exercices vont du plus simple au plus difficile : d'abord des commandes <b>seules</b>, puis avec un <b>argument</b>, puis avec des <b>options</b>, enfin avec des <b>jokers</b>. Essayez sans regarder l'indice. Les résultats sont indicatifs : dates et nom d'utilisateur varient.</div>
+<h3 class="lvl">Niveau 1 — Commandes seules (aucun paramètre)</h3><p class="lvd">Tapez juste le nom de la commande, puis Entrée.</p>
+<div class="ex"><h3>Exercice 1 — Où suis-je ?</h3>
+<p>Affichez le chemin du répertoire dans lequel vous vous trouvez.</p>
+<details class="hint"><summary>Indice</summary><div>La commande s'écrit en 3 lettres : <b>p</b>rint <b>w</b>orking <b>d</b>irectory.</div></details>
+<details class="res"><summary>Résultat attendu</summary><div><pre><span class="p">$</span> pwd
+/home/alice</pre></div></details></div>
+<div class="ex"><h3>Exercice 2 — Qui suis-je ? Quelle heure est-il ?</h3>
+<p>Affichez votre nom d'utilisateur, puis la date et l'heure.</p>
+<details class="hint"><summary>Indice</summary><div>Deux commandes, une par ligne : <code>whoami</code> (« qui suis-je ») et <code>date</code>.</div></details>
+<details class="res"><summary>Résultat attendu</summary><div><pre><span class="p">$</span> whoami
+alice
+<span class="p">$</span> date
+lun. 28 sept. 2026 10:30:12 CEST</pre></div></details></div>
+<div class="ex"><h3>Exercice 3 — Voir le contenu du dossier</h3>
+<p>Listez les fichiers et dossiers présents dans votre dossier actuel.</p>
+<details class="hint"><summary>Indice</summary><div><code>ls</code> vient de « list ». Un dossier neuf peut sembler vide : c'est normal.</div></details>
+<details class="res"><summary>Résultat attendu</summary><div><pre><span class="p">$</span> ls
+Documents  Images  Téléchargements</pre></div></details></div>
+<div class="ex"><h3>Exercice 4 — Nettoyer et revoir l'historique</h3>
+<p>Effacez l'écran, puis affichez la liste des commandes déjà tapées.</p>
+<details class="hint"><summary>Indice</summary><div><code>clear</code> nettoie (ou <kbd>Ctrl</kbd>+<kbd>L</kbd>). <code>history</code> affiche l'historique.</div></details>
+<details class="res"><summary>Résultat attendu</summary><div><pre><span class="p">$</span> clear
+<span class="p">$</span> history
+    1  pwd
+    2  whoami
+    3  date
+    4  ls
+    5  clear
+    6  history</pre></div></details></div>
+<h3 class="lvl">Niveau 2 — Avec un argument</h3><p class="lvd">La commande reçoit un nom (dossier, fichier, texte) sur lequel travailler.</p>
+<div class="ex"><h3>Exercice 5 — Créer un dossier et y entrer</h3>
+<p>Créez un dossier nommé <code>tp</code>, placez-vous dedans, puis vérifiez où vous êtes.</p>
+<details class="hint"><summary>Indice</summary><div><code>mkdir nom</code> crée, <code>cd nom</code> entre, <code>pwd</code> vérifie.</div></details>
+<details class="res"><summary>Résultat attendu</summary><div><pre><span class="p">$</span> mkdir tp
+<span class="p">$</span> cd tp
+<span class="p">$</span> pwd
+/home/alice/tp</pre></div></details></div>
+<div class="ex"><h3>Exercice 6 — Créer et remplir un fichier</h3>
+<p>Dans <code>tp</code>, créez un fichier vide <code>a.txt</code>. Puis créez <code>salut.txt</code> contenant le texte « Bonjour Linux » et affichez-le.</p>
+<details class="hint"><summary>Indice</summary><div><code>touch a.txt</code> crée un fichier vide. <code>echo "texte" &gt; fichier</code> écrit le texte dans le fichier. <code>cat fichier</code> l'affiche.</div></details>
+<details class="res"><summary>Résultat attendu</summary><div><pre><span class="p">$</span> touch a.txt
+<span class="p">$</span> echo "Bonjour Linux" &gt; salut.txt
+<span class="p">$</span> cat salut.txt
+Bonjour Linux
+<span class="p">$</span> ls
+a.txt  salut.txt</pre></div></details></div>
+<div class="ex"><h3>Exercice 7 — Copier, renommer, supprimer</h3>
+<p>Copiez <code>a.txt</code> en <code>b.txt</code>, renommez <code>b.txt</code> en <code>c.txt</code>, puis supprimez <code>c.txt</code>.</p>
+<details class="hint"><summary>Indice</summary><div><code>cp source destination</code>, <code>mv ancien nouveau</code>, <code>rm fichier</code>. Attention : <code>rm</code> n'a pas de corbeille.</div></details>
+<details class="res"><summary>Résultat attendu</summary><div><pre><span class="p">$</span> cp a.txt b.txt
+<span class="p">$</span> mv b.txt c.txt
+<span class="p">$</span> rm c.txt
+<span class="p">$</span> ls
+a.txt  salut.txt</pre></div></details></div>
+<div class="ex"><h3>Exercice 8 — Demander de l'aide sur une commande</h3>
+<p>Trouvez ce que fait la commande <code>wc</code> en une ligne, puis ouvrez le manuel de <code>ls</code> et quittez-le.</p>
+<details class="hint"><summary>Indice</summary><div><code>whatis wc</code> pour la ligne, <code>man ls</code> pour le manuel. Dans man, la touche <kbd>q</kbd> quitte.</div></details>
+<details class="res"><summary>Résultat attendu</summary><div><pre><span class="p">$</span> whatis wc
+wc (1)  - print newline, word, and byte counts for each file
+<span class="p">$</span> man ls
+LS(1)   User Commands   LS(1)
+NAME
+       ls - list directory contents
+(appuyer sur q pour quitter)</pre></div></details></div>
+<h3 class="lvl">Niveau 3 — Avec des options (-l, -a, -h, -p…)</h3><p class="lvd">Une option, écrite avec un tiret, change le comportement de la commande.</p>
+<div class="ex"><h3>Exercice 9 — Un listing détaillé</h3>
+<p>Listez le contenu de <code>tp</code> avec les détails (droits, taille, date).</p>
+<details class="hint"><summary>Indice</summary><div>Option <code>-l</code> (« long »).</div></details>
+<details class="res"><summary>Résultat attendu</summary><div><pre><span class="p">$</span> ls -l
+total 8
+-rw-r--r-- 1 alice alice  0 sept. 28 10:35 a.txt
+-rw-r--r-- 1 alice alice 14 sept. 28 10:36 salut.txt</pre></div></details></div>
+<div class="ex"><h3>Exercice 10 — Fichiers cachés et tailles lisibles</h3>
+<p>Affichez aussi les fichiers cachés de votre dossier personnel, avec les tailles en Ko/Mo, en une seule commande, puis revenez chez vous.</p>
+<details class="hint"><summary>Indice</summary><div>Combinez les options : <code>-l</code>, <code>-a</code> (all), <code>-h</code> (human) donnent <code>-lah</code>. <code>cd</code> seul ramène au dossier personnel.</div></details>
+<details class="res"><summary>Résultat attendu</summary><div><pre><span class="p">$</span> cd
+<span class="p">$</span> ls -lah
+total 32K
+drwxr-x--- 5 alice alice 4,0K sept. 28 10:30 .
+drwxr-xr-x 3 root  root  4,0K sept. 28 09:58 ..
+-rw-r--r-- 1 alice alice  220 sept. 28 09:58 .bash_logout
+-rw-r--r-- 1 alice alice 3,7K sept. 28 09:58 .bashrc</pre></div></details></div>
+<div class="ex"><h3>Exercice 11 — Créer plusieurs niveaux d'un coup</h3>
+<p>Créez <code>tp/projet/img</code> en une seule commande, puis affichez seulement la 1re ligne de <code>salut.txt</code>.</p>
+<details class="hint"><summary>Indice</summary><div><code>mkdir -p</code> crée aussi les dossiers parents manquants. <code>head -n 1 fichier</code> affiche la 1re ligne.</div></details>
+<details class="res"><summary>Résultat attendu</summary><div><pre><span class="p">$</span> mkdir -p ~/tp/projet/img
+<span class="p">$</span> ls ~/tp
+a.txt  projet  salut.txt
+<span class="p">$</span> head -n 1 ~/tp/salut.txt
+Bonjour Linux</pre></div></details></div>
+<h3 class="lvl">Niveau 4 — Les jokers * ? [ ]</h3><p class="lvd">Un motif remplace plusieurs noms de fichiers à la fois. Préparez d'abord le décor :</p>
+<pre><span class="p">$</span> mkdir -p ~/tp/jok &amp;&amp; cd ~/tp/jok
+<span class="p">$</span> touch rapport1.txt rapport2.txt rapport10.txt photo_a.jpg photo_b.jpg photo_c.png notes.md</pre>
+<div class="ex"><h3>Exercice 12 — Le joker *</h3>
+<p>Affichez tous les fichiers qui se terminent par <code>.txt</code>, puis tous ceux qui commencent par <code>photo</code>.</p>
+<details class="hint"><summary>Indice</summary><div><code>*</code> remplace n'importe quelle suite de caractères : <code>*.txt</code> et <code>photo*</code>.</div></details>
+<details class="res"><summary>Résultat attendu</summary><div><pre><span class="p">$</span> ls *.txt
+rapport10.txt  rapport1.txt  rapport2.txt
+<span class="p">$</span> ls photo*
+photo_a.jpg  photo_b.jpg  photo_c.png</pre></div></details></div>
+<div class="ex"><h3>Exercice 13 — Les jokers ? et [ ]</h3>
+<p>Affichez (a) les rapports dont le numéro n'a qu'un chiffre, (b) seulement <code>photo_a.jpg</code> et <code>photo_b.jpg</code>, (c) tous les fichiers dont le nom ne commence pas par <code>r</code>.</p>
+<details class="hint"><summary>Indice</summary><div>(a) <code>?</code> = un seul caractère. (b) <code>[ab]</code> = a ou b. (c) <code>[!r]*</code>.</div></details>
+<details class="res"><summary>Résultat attendu</summary><div><pre><span class="p">$</span> ls rapport?.txt
+rapport1.txt  rapport2.txt
+<span class="p">$</span> ls photo_[ab].jpg
+photo_a.jpg  photo_b.jpg
+<span class="p">$</span> ls [!r]*
+notes.md  photo_a.jpg  photo_b.jpg  photo_c.png</pre></div></details></div>
+<h3 class="lvl">Niveau 5 — Défi final</h3><p class="lvd">Mélangez tout ce que vous savez.</p>
+<div class="ex"><h3>Exercice 14 — Trier avec des jokers</h3>
+<p>Dans <code>~/tp/jok</code> : copiez toutes les images (jpg et png) dans <code>~/tp/projet/img</code>, puis supprimez <code>rapport1.txt</code> et <code>rapport2.txt</code> sans toucher à <code>rapport10.txt</code>. Vérifiez à la fin.</p>
+<details class="hint"><summary>Indice</summary><div>Copie : <code>cp photo_* ~/tp/projet/img</code>. Avant de supprimer, testez le motif avec <code>ls rapport?.txt</code>, puis remplacez <code>ls</code> par <code>rm</code>.</div></details>
+<details class="res"><summary>Résultat attendu</summary><div><pre><span class="p">$</span> cp photo_* ~/tp/projet/img
+<span class="p">$</span> ls rapport?.txt
+rapport1.txt  rapport2.txt
+<span class="p">$</span> rm rapport?.txt
+<span class="p">$</span> ls
+notes.md  photo_a.jpg  photo_b.jpg  photo_c.png  rapport10.txt
+<span class="p">$</span> ls ~/tp/projet/img
+photo_a.jpg  photo_b.jpg  photo_c.png</pre></div></details></div>
+<div class="note"><b>Bonne pratique :</b> avant toute suppression avec un joker, lancez d'abord <code>ls</code> avec le même motif pour voir ce qui sera touché. Ne tapez jamais <code>rm -rf /</code> ni <code>rm -rf *</code> sans savoir où vous êtes.</div>
+<h3 class="lvl" id="final">Niveau 6 — Exercice final noté (13 questions liées)</h3>
+<p class="lvd">Un seul projet, 13 étapes à faire dans l'ordre : organiser le dossier d'une école. Chaque étape utilise le résultat de la précédente.</p>
+<div class="ex"><ol>
+<li>Créez le dossier <code>ecole</code> dans votre dossier personnel et placez-vous dedans.</li>
+<li>Dans <code>ecole</code>, créez en <b>une seule commande</b> les dossiers <code>cours</code>, <code>tp</code> et <code>archives</code>.</li>
+<li>Créez d'un coup le chemin <code>cours/linux/notes</code>.</li>
+<li>Dans <code>tp</code>, créez les fichiers vides <code>tp1.txt</code>, <code>tp2.txt</code>, <code>tp3.txt</code> et <code>rapport.md</code>, sans quitter <code>ecole</code>.</li>
+<li>Créez <code>cours/linux/notes/intro.txt</code> contenant la ligne : <code>Linux est un noyau</code></li>
+<li>Ajoutez à la fin de ce fichier la ligne : <code>Unix date de 1969</code> (sans effacer la première).</li>
+<li>Copiez <code>intro.txt</code> dans <code>archives</code> sous le nom <code>intro_copy.txt</code>.</li>
+<li>Renommez <code>tp/rapport.md</code> en <code>tp/rapport_final.md</code>.</li>
+<li>Avec un joker, copiez tous les fichiers <code>.txt</code> de <code>tp</code> dans <code>archives</code>.</li>
+<li>Supprimez <code>tp/tp3.txt</code> (sa copie dans <code>archives</code> doit rester).</li>
+<li>Créez un fichier caché vide nommé <code>.config</code> dans <code>ecole</code>.</li>
+<li>Enregistrez la liste des fichiers de <code>archives</code> dans le fichier <code>ecole/liste.txt</code>.</li>
+<li>Avec un joker, copiez les fichiers <code>.md</code> de <code>tp</code> dans <code>cours</code>.</li>
+</ol>
+<details class="hint"><summary>Indices</summary><div><ol>
+<li><code>mkdir</code> puis <code>cd</code></li><li><code>mkdir</code> accepte plusieurs noms</li><li>option <code>-p</code></li><li><code>touch</code> avec des chemins <code>tp/…</code></li><li><code>echo "…" &gt; fichier</code></li><li><code>&gt;&gt;</code> ajoute à la fin</li><li><code>cp source destination</code></li><li><code>mv</code></li><li><code>cp tp/*.txt …</code></li><li><code>rm</code></li><li>un nom qui commence par un point</li><li><code>ls dossier &gt; fichier</code></li><li>même idée que la question 9 avec <code>*.md</code></li></ol></div></details>
+<details class="res"><summary>Résultat attendu (arborescence finale)</summary><div><pre><span class=p>$</span> cd ~/ecole &amp;&amp; ls -RA
+.:
+.config  archives  cours  liste.txt  tp
+
+./archives:
+intro_copy.txt  tp1.txt  tp2.txt  tp3.txt
+
+./cours:
+linux  rapport_final.md
+
+./cours/linux:
+notes
+
+./cours/linux/notes:
+intro.txt
+
+./tp:
+rapport_final.md  tp1.txt  tp2.txt</pre></div></details>
+<h4>Vérifier votre travail avec le script de correction</h4>
+<p>Le script contrôle l'état de votre dossier <code>~/ecole</code>, affiche pour chaque question <b>CORRECT</b> ou <b>FAUX</b> avec la <b>commande attendue</b>, donne une note sur 20 et écrit un journal dans <code>~/verification_ecole.log</code>. Faites l'exercice <b>avant</b> de le lancer.</p>
+<p><button class="btn" id="dl" style="border:0;cursor:pointer;display:none">Télécharger le script</button> <button class="btn" id="cp" style="border:0;cursor:pointer;background:#5b6b7c">Copier le script</button></p>
+<p id="msg" role="status" style="color:var(--mut);font-size:14px"></p>
+<div class="note"><b>Lancer le script :</b> le téléchargement se nomme <code>verifier_exercice.txt</code>. Dans WSL, copiez-le depuis Windows puis exécutez-le :
+<pre><span class="p">$</span> cp /mnt/c/Users/VOTRE_NOM/Downloads/verifier_exercice.txt ~/
+<span class="p">$</span> bash ~/verifier_exercice.txt</pre>
+Sous Linux ou en machine virtuelle : <code>bash ~/Téléchargements/verifier_exercice.txt</code>. Avec « Copier », collez le contenu dans un fichier créé avec <code>nano verifier_exercice.sh</code>, puis <code>bash verifier_exercice.sh</code>.</div>
+</div>
+<script>
+(function(){
+var B="IyEvYmluL2Jhc2gKIyBWZXJpZmljYXRldXIgYXV0b21hdGlxdWUgLSBFeGVyY2ljZSBmaW5hbCwgQ2hhcGl0cmUgMiAoTGludXgpCiMgVXNhZ2UgOiBiYXNoIHZlcmlmaWVyX2V4ZXJjaWNlLnR4dCAgIChvdSByZW5vbW1lei1sZSBlbiAuc2gpCkJBU0U9IiRIT01FL2Vjb2xlIgpMT0c9IiRIT01FL3ZlcmlmaWNhdGlvbl9lY29sZS5sb2ciCm9rPTA7IHRvdGFsPTAKOiA+ICIkTE9HIgp7CmVjaG8gIj09PSBWZXJpZmljYXRpb24gZGUgbCdleGVyY2ljZSBmaW5hbCA9PT0iCmVjaG8gIkRvc3NpZXIgdmVyaWZpZSA6ICRCQVNFIgplY2hvCn0gfCB0ZWUgLWEgIiRMT0ciCgpjaGVjaygpIHsKICAjICQxPW51bWVybyAgJDI9ZGVzY3JpcHRpb24gICQzPWNvZGUgcmV0b3VyIGR1IHRlc3QgICQ0PWNvbW1hbmRlIGF0dGVuZHVlIChiYXNlNjQpCiAgdG90YWw9JCgodG90YWwrMSkpCiAgY21kPSQoZWNobyAiJDQiIHwgYmFzZTY0IC1kKQogIGlmIFsgIiQzIiAtZXEgMCBdOyB0aGVuIG9rPSQoKG9rKzEpKTsgc3Q9IkNPUlJFQ1QiOyBjPSJcMDMzWzMybSIKICBlbHNlIHN0PSJGQVVYIjsgYz0iXDAzM1szMW0iOyBmaQogIHByaW50ZiAiJHtjfVElcyBbJXNdXDAzM1swbSAlc1xuIiAiJDEiICIkc3QiICIkMiIKICBwcmludGYgIiAgICAgIENvbW1hbmRlIGF0dGVuZHVlIDogJXNcbiIgIiRjbWQiCiAgcHJpbnRmICIlcyBRJXMgWyVzXSAlcyB8IGF0dGVuZHVlIDogJXNcbiIgIiQoZGF0ZSAnKyVGICVUJykiICIkMSIgIiRzdCIgIiQyIiAiJGNtZCIgPj4gIiRMT0ciCn0KClsgLWQgIiRCQVNFIiBdOyBjaGVjayAxICJMZSBkb3NzaWVyIGVjb2xlIGV4aXN0ZSBkYW5zIHZvdHJlIGRvc3NpZXIgcGVyc29ubmVsIiAkPyAiYld0a2FYSWdaV052YkdVZ0ppWWdZMlFnWldOdmJHVT0iClsgLWQgIiRCQVNFL2NvdXJzIiBdICYmIFsgLWQgIiRCQVNFL3RwIiBdICYmIFsgLWQgIiRCQVNFL2FyY2hpdmVzIiBdOyBjaGVjayAyICJMZXMgZG9zc2llcnMgY291cnMsIHRwIGV0IGFyY2hpdmVzIGV4aXN0ZW50IGRhbnMgZWNvbGUiICQ/ICJiV3RrYVhJZ1kyOTFjbk1nZEhBZ1lYSmphR2wyWlhNPSIKWyAtZCAiJEJBU0UvY291cnMvbGludXgvbm90ZXMiIF07IGNoZWNrIDMgIkxlIGNoZW1pbiBjb3Vycy9saW51eC9ub3RlcyBleGlzdGUiICQ/ICJiV3RrYVhJZ0xYQWdZMjkxY25NdmJHbHVkWGd2Ym05MFpYTT0iClsgLWYgIiRCQVNFL3RwL3RwMS50eHQiIF0gJiYgWyAtZiAiJEJBU0UvdHAvdHAyLnR4dCIgXSAmJiB7IFsgLWYgIiRCQVNFL3RwL3RwMy50eHQiIF0gfHwgWyAtZiAiJEJBU0UvYXJjaGl2ZXMvdHAzLnR4dCIgXTsgfSAmJiB7IFsgLWYgIiRCQVNFL3RwL3JhcHBvcnQubWQiIF0gfHwgWyAtZiAiJEJBU0UvdHAvcmFwcG9ydF9maW5hbC5tZCIgXTsgfTsgY2hlY2sgNCAiTGVzIGZpY2hpZXJzIHRwMS50eHQsIHRwMi50eHQsIHRwMy50eHQgZXQgcmFwcG9ydC5tZCBvbnQgZXRlIGNyZWVzIGRhbnMgdHAiICQ/ICJkRzkxWTJnZ2RIQXZkSEF4TG5SNGRDQjBjQzkwY0RJdWRIaDBJSFJ3TDNSd015NTBlSFFnZEhBdmNtRndjRzl5ZEM1dFpBPT0iClsgIiQoaGVhZCAtbiAxICIkQkFTRS9jb3Vycy9saW51eC9ub3Rlcy9pbnRyby50eHQiIDI+L2Rldi9udWxsKSIgPSAiTGludXggZXN0IHVuIG5veWF1IiBdOyBjaGVjayA1ICJpbnRyby50eHQgY29udGllbnQgbGEgbGlnbmUgOiBMaW51eCBlc3QgdW4gbm95YXUiICQ/ICJaV05vYnlBaVRHbHVkWGdnWlhOMElIVnVJRzV2ZVdGMUlpQStJR052ZFhKekwyeHBiblY0TDI1dmRHVnpMMmx1ZEhKdkxuUjRkQT09IgpbICIkKHNlZCAtbiAycCAiJEJBU0UvY291cnMvbGludXgvbm90ZXMvaW50cm8udHh0IiAyPi9kZXYvbnVsbCkiID0gIlVuaXggZGF0ZSBkZSAxOTY5IiBdICYmIFsgIiQod2MgLWwgPCAiJEJBU0UvY291cnMvbGludXgvbm90ZXMvaW50cm8udHh0IikiIC1lcSAyIF07IGNoZWNrIDYgImludHJvLnR4dCBjb250aWVudCAyIGxpZ25lcywgbGEgMmUgZXRhbnQgOiBVbml4IGRhdGUgZGUgMTk2OSIgJD8gIlpXTm9ieUFpVlc1cGVDQmtZWFJsSUdSbElERTVOamtpSUQ0K0lHTnZkWEp6TDJ4cGJuVjRMMjV2ZEdWekwybHVkSEp2TG5SNGRBPT0iCmNtcCAtcyAiJEJBU0UvY291cnMvbGludXgvbm90ZXMvaW50cm8udHh0IiAiJEJBU0UvYXJjaGl2ZXMvaW50cm9fY29weS50eHQiOyBjaGVjayA3ICJhcmNoaXZlcy9pbnRyb19jb3B5LnR4dCBlc3QgdW5lIGNvcGllIGlkZW50aXF1ZSBkZSBpbnRyby50eHQiICQ/ICJZM0FnWTI5MWNuTXZiR2x1ZFhndmJtOTBaWE12YVc1MGNtOHVkSGgwSUdGeVkyaHBkbVZ6TDJsdWRISnZYMk52Y0hrdWRIaDAiClsgLWYgIiRCQVNFL3RwL3JhcHBvcnRfZmluYWwubWQiIF0gJiYgWyAhIC1lICIkQkFTRS90cC9yYXBwb3J0Lm1kIiBdOyBjaGVjayA4ICJ0cC9yYXBwb3J0Lm1kIGEgZXRlIHJlbm9tbWUgZW4gdHAvcmFwcG9ydF9maW5hbC5tZCIgJD8gImJYWWdkSEF2Y21Gd2NHOXlkQzV0WkNCMGNDOXlZWEJ3YjNKMFgyWnBibUZzTG0xayIKWyAtZiAiJEJBU0UvYXJjaGl2ZXMvdHAxLnR4dCIgXSAmJiBbIC1mICIkQkFTRS9hcmNoaXZlcy90cDIudHh0IiBdICYmIFsgLWYgIiRCQVNFL2FyY2hpdmVzL3RwMy50eHQiIF07IGNoZWNrIDkgImFyY2hpdmVzIGNvbnRpZW50IHRwMS50eHQsIHRwMi50eHQgZXQgdHAzLnR4dCAoY29waWVzKSIgJD8gIlkzQWdkSEF2S2k1MGVIUWdZWEpqYUdsMlpYTXYiClsgISAtZSAiJEJBU0UvdHAvdHAzLnR4dCIgXSAmJiBbIC1mICIkQkFTRS9hcmNoaXZlcy90cDMudHh0IiBdOyBjaGVjayAxMCAidHAvdHAzLnR4dCBlc3Qgc3VwcHJpbWUgbWFpcyBhcmNoaXZlcy90cDMudHh0IGV4aXN0ZSB0b3Vqb3VycyIgJD8gImNtMGdkSEF2ZEhBekxuUjRkQT09IgpbIC1mICIkQkFTRS8uY29uZmlnIiBdOyBjaGVjayAxMSAiTGUgZmljaGllciBjYWNoZSAuY29uZmlnIGV4aXN0ZSBkYW5zIGVjb2xlIiAkPyAiZEc5MVkyZ2dMbU52Ym1acFp3PT0iClsgLWYgIiRCQVNFL2xpc3RlLnR4dCIgXSAmJiBbICIkKGNhdCAiJEJBU0UvbGlzdGUudHh0IikiID0gIiQobHMgIiRCQVNFL2FyY2hpdmVzIiAyPi9kZXYvbnVsbCkiIF07IGNoZWNrIDEyICJsaXN0ZS50eHQgY29udGllbnQgZXhhY3RlbWVudCBsYSBsaXN0ZSBkZXMgZmljaGllcnMgZGUgYXJjaGl2ZXMiICQ/ICJiSE1nWVhKamFHbDJaWE1nUGlCc2FYTjBaUzUwZUhRPSIKWyAtZiAiJEJBU0UvY291cnMvcmFwcG9ydF9maW5hbC5tZCIgXTsgY2hlY2sgMTMgImNvdXJzIGNvbnRpZW50IHJhcHBvcnRfZmluYWwubWQgKGNvcGllIGR1IGZpY2hpZXIgLm1kIGRlIHRwKSIgJD8gIlkzQWdkSEF2S2k1dFpDQmpiM1Z5Y3k4PSIKCmVjaG8Kbm90ZT0kKGF3ayAtdiBvPSRvayAtdiB0PSR0b3RhbCAnQkVHSU57cHJpbnRmICIlLjFmIiwgbyoyMC90fScpCnByaW50ZiAiUmVzdWx0YXQgOiAlcy8lcyBib25uZXMgcmVwb25zZXMgIC0+ICBub3RlIDogJXMvMjBcbiIgIiRvayIgIiR0b3RhbCIgIiRub3RlIiB8IHRlZSAtYSAiJExPRyIKaWYgWyAiJG9rIiAtZXEgIiR0b3RhbCIgXTsgdGhlbiBlY2hvICJCcmF2bywgZXhlcmNpY2UgcmV1c3NpICEiCmVsc2UgZWNobyAiUmVsaXNleiBsZXMgY29tbWFuZGVzIGF0dGVuZHVlcyBjaS1kZXNzdXMsIGNvcnJpZ2V6LCBwdWlzIHJlbGFuY2V6IGxlIHNjcmlwdC4iOyBmaQplY2hvICJKb3VybmFsIGVucmVnaXN0cmUgZGFucyA6ICRMT0ciCg==";
+function txt(){var b=atob(B),u=new Uint8Array(b.length);for(var i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return new TextDecoder().decode(u);}
+var m=document.getElementById("msg");
+document.getElementById("cp").onclick=function(){
+try{navigator.clipboard.writeText(txt()).then(function(){m.textContent="Script copié dans le presse-papiers.";},function(){m.textContent="Copie impossible ici : utilisez le bouton de téléchargement.";});}catch(e){m.textContent="Copie impossible ici : utilisez le bouton de téléchargement.";}
+};
+try{if(window.claude&&claude.use){claude.use("downloads").then(function(d){
+ if(!d)return;var b=document.getElementById("dl");b.style.display="inline-block";
+ b.onclick=function(){d.save({filename:"verifier_exercice.txt",data:txt()}).then(function(){m.textContent="Script enregistré : verifier_exercice.txt";},function(e){m.textContent=(e&&e.code==="declined")?"Téléchargement annulé.":"Téléchargement indisponible : utilisez « Copier le script ».";});};
+});}}catch(e){}
+})();
+</script>
+</section>
+<footer>Chapitre 2 — Introduction à Unix/Linux et généralités.</footer>
+</main>
+</div>
+<div id="bar"></div>
+<script>
+(function(){
+var bar=document.getElementById("bar"),f=document.getElementById("pgf"),t=document.getElementById("pgt");
+function up(){var h=document.documentElement.scrollHeight-innerHeight,r=h>0?Math.min(1,Math.max(0,scrollY/h)):0,v=Math.round(r*100);
+bar.style.width=v+"%";f.style.width=v+"%";t.textContent=v+" % parcouru";}
+addEventListener("scroll",up,{passive:true});up();
+var secs=[].slice.call(document.querySelectorAll("main section")),links=[].slice.call(document.querySelectorAll("nav a"));
+secs.forEach(function(sec,i){var prev=i?secs[i-1]:document.getElementById("accueil"),next=secs[i+1];
+var d=document.createElement("div");d.className="pn";
+var pt=i?prev.querySelector("h2").textContent:"Accueil";
+d.innerHTML='<a href="#'+prev.id+'">\u2190 '+pt+'</a>'+(next?'<a href="#'+next.id+'">'+next.querySelector("h2").textContent+' \u2192</a>':'');
+sec.appendChild(d);});
+if("IntersectionObserver" in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){links.forEach(function(a){a.classList.toggle("on",a.getAttribute("href")==="#"+e.target.id);});}});},{rootMargin:"-20% 0px -70% 0px"});
+io.observe(document.getElementById("accueil"));secs.forEach(function(x){io.observe(x);});}
+})();
+</script>
+</body>
+</html>
